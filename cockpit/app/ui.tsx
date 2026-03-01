@@ -4892,7 +4892,21 @@ export default function ClientBoard() {
                     <div>
                       <div style={{ fontSize: 12, opacity: 0.72 }}>Cron-Details</div>
                       <h3 style={{ margin: '4px 0 2px 0' }}>{simplifyCronJobName(selectedCronJob.job.name)}</h3>
-                      <div style={{ fontSize: 12, opacity: 0.86 }}>
+                      <div
+                        style={{
+                          marginTop: 6,
+                          fontSize: 13,
+                          lineHeight: 1.45,
+                          color: '#e2e8f0',
+                          background: '#1b2433',
+                          border: '1px solid #334155',
+                          borderRadius: 8,
+                          padding: '8px 10px',
+                          maxWidth: 560,
+                          whiteSpace: 'normal',
+                          wordBreak: 'break-word',
+                        }}
+                      >
                         {cronPurposeSummary(selectedCronJob.job)}
                       </div>
                     </div>
