@@ -3597,14 +3597,19 @@ export default function ClientBoard() {
     const payload = String(job.payloadMessage || '').trim()
     if (payload) {
       const firstLine = payload.split('\n').map((line) => line.trim()).find(Boolean) || ''
-      return firstLine.slice(0, 140)
+      if (firstLine) return firstLine.slice(0, 140)
     }
+
+    const name = String(job.name || '').toLowerCase()
+    if (name.includes('crawler') && name.includes('zh') && name.includes('daily')) return 'Publiziert täglich den ZH-Crawler-Stand (Commit/Push/Deploy).'
+    if (name.includes('crawler') && name.includes('zh')) return 'Sammelt/scoret ZH-Vorstösse zur Qualitätsverbesserung.'
+    if (name.includes('crawler') && name.includes('weekly')) return 'Wöchentlicher ZH-Full-Import (Kantonsrat-Quelle) mit Review-Update.'
+    if (name.includes('heartbeat')) return 'Prüft regelmässig den Agent-Status und meldet Auffälligkeiten.'
+    if (name.includes('health')) return 'Täglicher Health-Check mit Sicherheits-/Systemstatus.'
+    if (name.includes('stadtrat')) return 'Verarbeitet Stadtrat-Trigger und synchronisiert neue Einträge.'
 
     const type = String(job.cronType || '').trim()
     if (type) return `${type} · ${job.enabled ? 'aktiv' : 'pausiert'}`
-
-    const label = String(job.scheduleLabel || '').trim()
-    if (label) return `Schedule: ${label}`
 
     return 'Keine Beschreibung hinterlegt.'
   }
