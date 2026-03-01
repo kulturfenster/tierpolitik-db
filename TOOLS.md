@@ -73,6 +73,7 @@ Things like:
   - Neue Kandidaten in Discord posten zur Review durch Tobi
   - Tobi markiert Vorstösse mit 👍, wenn Tierbezug vorhanden
   - Bei 👍: Entwurfstext + Bild (Stil: pencil sketch) erstellen
+  - **Pflicht-Check vor Posting:** Ersteinreichende vs. Unterstützende aus Originaldokument wortgetreu prüfen (keine Schätzung)
   - Danach auf TIF-Website veröffentlichen
 - Bei neuen Vorschlägen immer gegen diese Liste prüfen.
 - Keine identischen oder sehr ähnlichen Vorschläge erneut bringen; stattdessen klar differenzieren (anderer Hebel, Ebene, Instrument oder Zielgruppe).
