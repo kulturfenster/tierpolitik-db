@@ -4284,7 +4284,7 @@ export default function ClientBoard() {
             Operative Umsetzung läuft primär in Discord/Telegram; das Cockpit dient hier als Überblick, Priorisierung und Entscheidungslage.
           </div>
         )}
-        {boardError && section !== 'radar' && (
+        {boardError && section !== 'radar' && section !== 'fundraising' && (
           <div style={{ marginBottom: 10, padding: '8px 10px', borderRadius: 8, border: '1px solid #7f1d1d', background: '#2b1111', color: '#fecaca', fontSize: 13 }}>
             {boardError}
           </div>
