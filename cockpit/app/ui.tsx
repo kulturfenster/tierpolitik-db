@@ -5174,7 +5174,6 @@ export default function ClientBoard() {
           <>
             <div style={{ marginBottom: 10, fontSize: 13, opacity: 0.85 }}>
               Hier siehst du alle freigegebenen Fundraising-Ideen aus dem Fundraisier-Ideenfundus.
-              Mit Klick auf den Titel öffnest du die Read-only-Vorschau; mit 🗑️ entfernst du den Eintrag direkt aus der Liste.
             </div>
             <div style={{ display: 'grid', gap: 10 }}>
               {fundraisingIdeas.length === 0 ? (
