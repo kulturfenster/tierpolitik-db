@@ -243,6 +243,30 @@
       "status": "doing",
       "kpis": "Datensatz ab 2020 online; methodische Schätzung mit Unsicherheitsband; monatliches Update",
       "tocAxis": "repraesentation"
+    },
+    {
+      "id": "memory_recipe_db_001",
+      "type": "memory",
+      "title": "Rezepte-DB (lokal)",
+      "notes": "JSON-Datenbank für Rezepte. Pfad: /Users/alf/.openclaw/workspace/recipes/db.json",
+      "owner": "ALF",
+      "status": "published",
+      "kpis": "Rezepte zentral versioniert + erweiterbar",
+      "tocAxis": "wertschoepfung",
+      "createdAt": "2026-03-02T19:29:00.000Z",
+      "updatedAt": "2026-03-02T19:29:00.000Z"
+    },
+    {
+      "id": "content_recipe_2026_03_02_cheesecake",
+      "type": "content",
+      "title": "Rezept: Protein-Cheesecake vegan (Tofu, Datteln, Cashews, Kichererbsen)",
+      "notes": "Rezeptdatei: /Users/alf/.openclaw/workspace/recipes/protein-cheesecake-vegan.md",
+      "owner": "ALF",
+      "status": "published",
+      "kpis": "1 Rezept publiziert",
+      "tocAxis": "wertschoepfung",
+      "createdAt": "2026-03-02T19:29:00.000Z",
+      "updatedAt": "2026-03-02T19:29:00.000Z"
     }
   ],
   "links": [
