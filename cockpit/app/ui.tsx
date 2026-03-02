@@ -3042,9 +3042,9 @@ export default function ClientBoard() {
         }
       }
 
-      if ((key === 'arrowleft' || key === 'arrowright') && section === 'calendar' && !isSidebarNavFocused) {
+      if (key === 'arrowright' && section === 'calendar' && !isSidebarNavFocused) {
         e.preventDefault()
-        focusCalendarCardHorizontal(key === 'arrowright' ? 1 : -1)
+        focusCalendarCardHorizontal(1)
         return
       }
 
