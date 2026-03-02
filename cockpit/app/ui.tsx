@@ -5135,14 +5135,9 @@ export default function ClientBoard() {
                 {fundraisingLoading ? 'Lade…' : 'Aktualisieren'}
               </button>
             </div>
-            {fundraisingError && (
-              <div style={{ marginBottom: 10, padding: '8px 10px', borderRadius: 8, border: '1px solid #7f1d1d', background: '#2b1111', color: '#fecaca' }}>
-                {fundraisingError}
-              </div>
-            )}
             <div style={{ display: 'grid', gap: 10 }}>
               {fundraisingIdeas.length === 0 ? (
-                <div style={{ opacity: 0.75 }}>Noch keine gespeicherten 👍-Ideen gefunden.</div>
+                <div style={{ opacity: 0.75 }} />
               ) : (
                 fundraisingIdeas.map((idea) => (
                   <article key={idea.id} style={{ border: '1px solid #2f2f2f', borderRadius: 10, padding: 12, background: '#171717' }}>
@@ -5154,9 +5149,11 @@ export default function ClientBoard() {
                       <button
                         onClick={() => void deleteFundraisingIdea(idea.sourceFile)}
                         disabled={fundraisingDeletePending === idea.sourceFile}
-                        style={{ background: '#3a1515', borderColor: '#7f1d1d' }}
+                        title="Idee löschen"
+                        aria-label="Idee löschen"
+                        style={{ minWidth: 44 }}
                       >
-                        {fundraisingDeletePending === idea.sourceFile ? 'Lösche…' : 'Löschen'}
+                        {fundraisingDeletePending === idea.sourceFile ? '…' : '🗑️'}
                       </button>
                     </div>
                   </article>
