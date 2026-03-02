@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-type Section = 'radar' | 'tasks' | 'calendar' | 'agents' | 'projects' | 'content' | 'memory' | 'docs' | 'people' | 'office' | 'health' | 'recipes' | 'fundraising' | 'files'
+type Section = 'radar' | 'tasks' | 'calendar' | 'agents' | 'projects' | 'content' | 'memory' | 'docs' | 'people' | 'office' | 'health' | 'recipes' | 'fundraising' | 'diary' | 'files'
 type EntityType = 'project' | 'content' | 'client' | 'memory' | 'doc' | 'person' | 'office'
 
 type Task = {
@@ -114,6 +114,15 @@ type FundraisingIdea = {
   path: string
 }
 
+type DiaryEntry = {
+  id: string
+  title: string
+  date: string
+  path: string
+  excerpt: string
+  content: string
+}
+
 type FilePreviewState = {
   open: boolean
   name?: string
@@ -205,7 +214,7 @@ function radarFollowupDeadlineIso(urgency: RadarItem['urgency']) {
   return dueAt.toISOString()
 }
 
-const sectionOrder: Section[] = ['radar', 'tasks', 'calendar', 'agents', 'content', 'projects', 'docs', 'memory', 'people', 'office', 'health', 'recipes', 'fundraising', 'files']
+const sectionOrder: Section[] = ['radar', 'tasks', 'calendar', 'agents', 'content', 'projects', 'docs', 'memory', 'people', 'office', 'health', 'recipes', 'fundraising', 'diary', 'files']
 
 const sectionMeta: Record<Section, { label: string; hint?: string; entityType?: EntityType }> = {
   radar: { label: 'Radar', hint: 'Signale & Entscheide' },
@@ -221,6 +230,7 @@ const sectionMeta: Record<Section, { label: string; hint?: string; entityType?: 
   health: { label: 'Health', hint: 'Obsidian/Physio Problemzonen' },
   recipes: { label: 'Rezepte', hint: 'Sammlung + visuelle Karten' },
   fundraising: { label: 'Fundraising', hint: 'Gespeicherte Ideen mit Approval' },
+  diary: { label: 'Tagebuch', hint: 'Tägliche strukturierte Zusammenfassungen' },
   files: { label: 'Files', hint: 'Wichtige Dateien & Scripts' },
 }
 
@@ -1483,6 +1493,10 @@ export default function ClientBoard() {
   const [fundraisingError, setFundraisingError] = useState<string | null>(null)
   const [fundraisingDeletePending, setFundraisingDeletePending] = useState<string | null>(null)
   const [fundraisingSelectedIndex, setFundraisingSelectedIndex] = useState(0)
+  const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([])
+  const [diaryLoading, setDiaryLoading] = useState(false)
+  const [diaryError, setDiaryError] = useState<string | null>(null)
+  const [diaryQuery, setDiaryQuery] = useState('')
 
   function isOfflineClient() {
     return typeof navigator !== 'undefined' && !navigator.onLine
@@ -1984,6 +1998,25 @@ export default function ClientBoard() {
     }
   }
 
+  async function loadDiaryEntries() {
+    if (diaryLoading) return
+    if (isOfflineClient()) {
+      setDiaryError('Offline: Tagebuch bleibt im letzten bekannten Stand sichtbar.')
+      return
+    }
+
+    setDiaryLoading(true)
+    try {
+      const payload = await fetchJsonWithTransientRetry<{ entries?: DiaryEntry[] }>('/api/diary', boardRequestTimeoutMs)
+      setDiaryEntries(Array.isArray(payload?.entries) ? payload.entries : [])
+      setDiaryError(null)
+    } catch {
+      setDiaryError('Tagebuch konnte nicht geladen werden.')
+    } finally {
+      setDiaryLoading(false)
+    }
+  }
+
   async function deleteFundraisingIdea(fileName: string) {
     if (!fileName || fundraisingDeletePending) return
     const confirmed = window.confirm(`Idee wirklich löschen?\n${fileName}`)
@@ -2255,6 +2288,9 @@ export default function ClientBoard() {
       setBoardError(null)
       setFundraisingSelectedIndex(0)
       void loadFundraisingIdeas()
+    } else if (section === 'diary') {
+      setBoardError(null)
+      void loadDiaryEntries()
     } else {
       const entityType = sectionMeta[section].entityType!
       setEntities(entitiesCacheRef.current[entityType] || [])
@@ -2376,6 +2412,12 @@ export default function ClientBoard() {
     if (section === 'fundraising') {
       setBoardError(null)
       void loadFundraisingIdeas()
+      return
+    }
+
+    if (section === 'diary') {
+      setBoardError(null)
+      void loadDiaryEntries()
       return
     }
 
@@ -3167,6 +3209,15 @@ export default function ClientBoard() {
     if (visibleSomedayItems.length === 0) return null
     return visibleSomedayItems[0]
   }, [visibleSomedayItems])
+
+  const visibleDiaryEntries = useMemo(() => {
+    const q = diaryQuery.trim().toLowerCase()
+    if (!q) return diaryEntries
+    return diaryEntries.filter((entry) => {
+      const haystack = `${entry.title}\n${entry.excerpt}\n${entry.content}`.toLowerCase()
+      return haystack.includes(q)
+    })
+  }, [diaryEntries, diaryQuery])
 
   useEffect(() => {
     topTaskShortcutCandidateRef.current = topTaskShortcutCandidate
@@ -5218,6 +5269,41 @@ export default function ClientBoard() {
                         {fundraisingDeletePending === idea.sourceFile ? '…' : '🗑️'}
                       </button>
                     </div>
+                  </article>
+                ))
+              )}
+            </div>
+          </>
+        ) : section === 'diary' ? (
+          <>
+            <div style={{ marginBottom: 10, fontSize: 13, opacity: 0.85 }}>
+              Tägliche strukturierte Zusammenfassungen mit den wichtigsten Punkten und Referenzen.
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+              <input
+                value={diaryQuery}
+                onChange={(e) => setDiaryQuery(e.target.value)}
+                placeholder="Tagebuch durchsuchen (Text, Dateien, Links)"
+                style={{ flex: 1, minWidth: 260 }}
+              />
+            </div>
+            {diaryError && <div style={{ marginBottom: 10, color: '#ffb4b4', fontSize: 13 }}>{diaryError}</div>}
+            <div style={{ display: 'grid', gap: 10 }}>
+              {diaryLoading ? (
+                <div style={{ opacity: 0.75 }}>Lade Tagebuch…</div>
+              ) : visibleDiaryEntries.length === 0 ? (
+                <div style={{ opacity: 0.75 }}>Keine Einträge gefunden.</div>
+              ) : (
+                visibleDiaryEntries.map((entry) => (
+                  <article key={entry.id} style={{ border: '1px solid #2f2f2f', borderRadius: 10, padding: 12, background: '#171717' }}>
+                    <button
+                      onClick={() => void openFilePreview(entry.title, entry.path, { readOnly: true, renderMarkdown: true, hidePath: true })}
+                      style={{ background: 'transparent', border: 'none', padding: 0, margin: 0, color: 'inherit', fontWeight: 700, textAlign: 'left', cursor: 'pointer' }}
+                      title="Eintrag öffnen"
+                    >
+                      {entry.date} · {entry.title}
+                    </button>
+                    {entry.excerpt ? <div style={{ marginTop: 6, opacity: 0.8, fontSize: 13 }}>{entry.excerpt}</div> : null}
                   </article>
                 ))
               )}
