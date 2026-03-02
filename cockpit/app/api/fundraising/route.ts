@@ -47,7 +47,7 @@ export async function GET() {
         ideaId,
         approvedAt,
         sourceFile: file,
-        path: `agents/fundraisier/ideen-fundus/${file}`,
+        path: `../agents/fundraisier/ideen-fundus/${file}`,
       })
     }
 
