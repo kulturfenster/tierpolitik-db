@@ -374,7 +374,7 @@ export const handler = async (event) => {
           m.source_id,
           m.external_id,
           m.source_url,
-          m.status,
+          coalesce(lr.status, m.status) as status,
           m.review_reason,
           m.published_at,
           m.fetched_at,
@@ -390,16 +390,23 @@ export const handler = async (event) => {
           order by mv.version_no desc
           limit 1
         ) mv on true
-        where m.status in ('approved','published')
+        left join lateral (
+          select status
+          from reviews r
+          where r.motion_id = m.id
+          order by r.decided_at desc nulls last
+          limit 1
+        ) lr on true
+        where coalesce(lr.status, m.status) in ('approved','published')
           and (
             m.source_id like 'ch-parliament-%'
             or m.source_id like 'ch-municipal-%'
             or m.source_id like 'ch-cantonal-%'
           )
           and coalesce(mv.title, '') <> ''
-          and coalesce(m.published_at, m.fetched_at) >= (now() - interval '5 years')
+          and coalesce(m.published_at, m.fetched_at) >= (now() - interval '10 years')
         order by m.updated_at desc
-        limit 1200
+        limit 2500
       `)
       return res.rows
     })
