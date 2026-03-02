@@ -31,7 +31,10 @@
     "db:init-schema": "node scripts/init-db-schema.mjs",
     "db:migrate-json": "node scripts/migrate-json-to-db.mjs",
     "db:sync-json": "node scripts/sync-db-to-json.mjs",
-    "db:refresh-site": "node scripts/db-refresh-site.mjs"
+    "db:refresh-site": "node scripts/db-refresh-site.mjs",
+    "dev:lan": "./scripts/dev-lan.sh",
+    "dev:lan:check": "./scripts/dev-lan-check.sh",
+    "monitor:local": "./scripts/monitor-local.sh"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
@@ -50,6 +53,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "netlify-cli": "^24.0.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
     "vite": "^7.3.1"
