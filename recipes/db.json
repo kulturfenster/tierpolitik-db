@@ -1,0 +1,33 @@
+{
+  "recipes": [
+    {
+      "id": "2026-03-02-tofu-dattel-cashew-kichererbsen-cheesecake",
+      "title": "Protein-Cheesecake (vegan) mit Tofu, Datteln, Cashews & Kichererbsen",
+      "created_at": "2026-03-02",
+      "ingredients": [
+        "250 g Naturtofu",
+        "120 g entsteinte Datteln",
+        "120 g Cashews (mind. 2 Std. eingeweicht, abgetropft)",
+        "160 g gekochte Kichererbsen (abgespült, abgetropft)",
+        "180 ml Kokosmilch (vollfett)",
+        "1 EL Zitronensaft (optional, für Frische)",
+        "1 TL Vanilleextrakt (optional)",
+        "1 Prise Salz"
+      ],
+      "steps": [
+        "Ofen auf 175°C Ober-/Unterhitze vorheizen. Kleine Springform (18–20 cm) mit Backpapier auslegen.",
+        "Cashews, Datteln, Tofu, Kichererbsen und Kokosmilch in einen starken Mixer geben.",
+        "Optional Zitronensaft, Vanille und Salz zugeben.",
+        "Sehr fein pürieren, bis die Masse glatt und cremig ist (1–2 Minuten, zwischendurch Wände abkratzen).",
+        "Masse in die Form geben und Oberfläche glatt streichen.",
+        "35–45 Minuten backen, bis die Ränder gesetzt sind und die Mitte noch leicht wackelt.",
+        "Komplett auskühlen lassen, dann mind. 3 Stunden (besser über Nacht) kaltstellen."
+      ],
+      "notes": [
+        "Süsser: 2–4 zusätzliche Datteln pürieren.",
+        "Fester: 1 EL Speisestärke ergänzen.",
+        "Topping-Idee: Beerenkompott oder gehackte Nüsse."
+      ]
+    }
+  ]
+}
