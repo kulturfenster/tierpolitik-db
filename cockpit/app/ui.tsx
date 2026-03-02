@@ -5519,10 +5519,12 @@ export default function ClientBoard() {
               style={{ width: 'min(1100px, 96vw)', maxHeight: '90vh', overflow: 'auto', background: '#101215', border: '1px solid #31363d', borderRadius: 10, padding: 12 }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, gap: 10 }}>
-                <div>
-                  <div style={{ fontWeight: 700 }}>{filePreview.name || 'Datei-Vorschau'}</div>
-                  {!filePreview.hidePath && <div style={{ fontSize: 11, opacity: 0.75 }}>{filePreview.path}</div>}
-                </div>
+                {!filePreview.hidePath ? (
+                  <div>
+                    <div style={{ fontWeight: 700 }}>{filePreview.name || 'Datei-Vorschau'}</div>
+                    <div style={{ fontSize: 11, opacity: 0.75 }}>{filePreview.path}</div>
+                  </div>
+                ) : <div />}
                 <div style={{ display: 'flex', gap: 8 }}>
                   {!filePreview.readOnly && (
                     <button
