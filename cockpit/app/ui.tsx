@@ -118,6 +118,9 @@ type DiaryEntry = {
   id: string
   title: string
   date: string
+  weekday?: string
+  weatherEmoji?: string
+  weatherLabel?: string
   path: string
   excerpt: string
   content: string
@@ -5361,6 +5364,9 @@ export default function ClientBoard() {
                     >
                       {entry.title}
                     </button>
+                    <div style={{ marginTop: 4, opacity: 0.82, fontSize: 12 }}>
+                      {entry.weekday || '—'} · {entry.weatherEmoji || '🌤️'} {entry.weatherLabel || 'keine Angabe'}
+                    </div>
                     {entry.excerpt ? <div style={{ marginTop: 6, opacity: 0.8, fontSize: 13 }}>{entry.excerpt}</div> : null}
                   </article>
                 ))

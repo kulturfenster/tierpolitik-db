@@ -6,6 +6,9 @@ type DiaryRow = {
   id: string
   title: string
   date: string
+  weekday: string
+  weatherEmoji: string
+  weatherLabel: string
   path: string
   excerpt: string
   content: string
@@ -25,6 +28,21 @@ function pickKeywords(raw: string) {
     .filter(Boolean)
 
   return bullets.slice(0, 4).join(' · ')
+}
+
+function weekdayDE(isoDate: string) {
+  const [y, m, d] = isoDate.split('-').map(Number)
+  const dt = new Date(Date.UTC(y, (m || 1) - 1, d || 1))
+  return new Intl.DateTimeFormat('de-CH', { weekday: 'long', timeZone: 'Europe/Zurich' }).format(dt)
+}
+
+function inferWeather(raw: string) {
+  const t = raw.toLowerCase()
+  if (/(regen|nass|schauer|gewitter)/.test(t)) return { emoji: '🌧️', label: 'Regen' }
+  if (/(schnee|frost|eis|kalt)/.test(t)) return { emoji: '❄️', label: 'Kalt/Schnee' }
+  if (/(sonn|klar|warm|heiss)/.test(t)) return { emoji: '☀️', label: 'Sonnig' }
+  if (/(bewölk|wolk|grau)/.test(t)) return { emoji: '☁️', label: 'Bewölkt' }
+  return { emoji: '🌤️', label: 'keine Angabe' }
 }
 
 const noStoreHeaders = {
@@ -50,11 +68,15 @@ export async function GET() {
       const date = file.replace(/\.md$/i, '')
       const title = formatDateCH(date)
       const excerpt = pickKeywords(raw)
+      const weather = inferWeather(raw)
 
       rows.push({
         id: date,
         title,
         date,
+        weekday: weekdayDE(date),
+        weatherEmoji: weather.emoji,
+        weatherLabel: weather.label,
         path: `../diary/${file}`,
         excerpt,
         content: raw,
