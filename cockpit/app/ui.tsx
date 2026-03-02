@@ -4508,7 +4508,7 @@ export default function ClientBoard() {
 
         {section === 'tasks' ? (
           <>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 8, marginBottom: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 10, marginBottom: 14 }}>
               <div style={{ background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 10 }}>
                 <div style={{ fontSize: 12, opacity: 0.8 }}>Heute-Fokus (Top 3 offen)</div>
                 <div style={{ marginTop: 6, fontSize: 13 }}>
@@ -4534,73 +4534,19 @@ export default function ClientBoard() {
                 <div style={{ fontSize: 12, opacity: 0.75 }}>Offene Tasks mit Deadline bis morgen</div>
               </div>
               <div style={{ background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 10 }}>
-                <div style={{ fontSize: 12, opacity: 0.8 }}>ToC-Verteilung (offene Tasks)</div>
-                <div style={{ marginTop: 6, fontSize: 13 }}>
-                  W: {tocCounts.wertschoepfung} · B: {tocCounts.weltbild} · R: {tocCounts.repraesentation}
-                </div>
-                <div style={{ fontSize: 11, opacity: 0.65, marginTop: 4 }}>W = Wertschöpfung, B = Weltbild, R = Repräsentation</div>
+                <div style={{ fontSize: 12, opacity: 0.8 }}>Aktiv in Bearbeitung</div>
+                <div style={{ fontSize: 22, fontWeight: 700 }}>{visible.filter((t) => t.status === 'doing').length}</div>
+                <div style={{ fontSize: 12, opacity: 0.75 }}>Tasks im Status Doing</div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <button
-                disabled={!topTaskShortcutCandidate || !!taskActionPending[topTaskShortcutCandidate.id]}
-                onClick={() => topTaskShortcutCandidate && move(topTaskShortcutCandidate.id, 'doing')}
-                title={
-                  topTaskShortcutCandidate
-                    ? `Setzt den wichtigsten offenen Task auf Doing: ${topTaskShortcutCandidate.title}`
-                    : 'Kein offener Task'
-                }
-              >
-                {topTaskShortcutCandidate ? 'Top-Task auf Doing' : 'Kein offener Task'}
-              </button>
-              <button
-                disabled={!topTaskShortcutCandidate || !!taskActionPending[topTaskShortcutCandidate.id]}
-                onClick={() => topTaskShortcutCandidate && move(topTaskShortcutCandidate.id, 'waiting')}
-                title={
-                  topTaskShortcutCandidate
-                    ? `Setzt den wichtigsten offenen Task auf Waiting For: ${topTaskShortcutCandidate.title}`
-                    : 'Kein offener Task'
-                }
-              >
-                {topTaskShortcutCandidate ? 'Top-Task auf Waiting For' : 'Kein offener Task'}
-              </button>
-              <button
-                disabled={!topDoingTaskShortcutCandidate || !!taskActionPending[topDoingTaskShortcutCandidate.id]}
-                onClick={() => topDoingTaskShortcutCandidate && move(topDoingTaskShortcutCandidate.id, 'done')}
-                title={
-                  topDoingTaskShortcutCandidate
-                    ? `Markiert den wichtigsten laufenden Task als Done: ${topDoingTaskShortcutCandidate.title}`
-                    : 'Kein laufender Task'
-                }
-              >
-                {topDoingTaskShortcutCandidate ? 'Top-Doing auf Done' : 'Kein Doing-Task'}
-              </button>
-              <button
-                disabled={!topSomedayShortcutCandidate || !!somedayBusyId}
-                onClick={() => topSomedayShortcutCandidate && void promoteSomeday(topSomedayShortcutCandidate, true)}
-                title={
-                  topSomedayShortcutCandidate
-                    ? `Übernimmt den wirkungsvollsten Someday-Eintrag in die Taskliste: ${topSomedayShortcutCandidate.title}`
-                    : 'Kein Someday-Eintrag'
-                }
-              >
-                {topSomedayShortcutCandidate ? 'Top-Someday zur Taskliste' : 'Kein Someday'}
-              </button>
-              {(topTaskShortcutCandidate || topDoingTaskShortcutCandidate || topSomedayShortcutCandidate) && (
-                <span style={{ fontSize: 11, opacity: 0.72 }}>
-                  Shortcuts: Shift+D = Doing · Shift+F = Waiting For · Shift+S = Done · Shift+P = Someday → Taskliste
-                  {topTaskShortcutCandidate && ` · Fokus Open: ${topTaskShortcutCandidate.title}`}
-                  {topDoingTaskShortcutCandidate && ` · Fokus Doing: ${topDoingTaskShortcutCandidate.title}`}
-                  {topSomedayShortcutCandidate && ` · Fokus Someday: ${topSomedayShortcutCandidate.title}`}
-                </span>
-              )}
+            <div style={{ marginBottom: 8, fontSize: 12, opacity: 0.72 }}>
+              Fokusansicht: nur wichtigste Aufgaben und aktueller Bearbeitungsstand.
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 12, marginTop: 16 }}>
-              {col('open', 'Open')}
-              {col('doing', 'Doing')}
-              {col('waiting', 'Waiting For')}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 12, marginTop: 12 }}>
+              {col('doing', 'In Arbeit')}
+              {col('open', 'Als Nächstes')}
             </div>
 
             <div style={{ marginTop: 16, background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 12 }}>
