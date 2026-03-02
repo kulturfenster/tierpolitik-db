@@ -3895,6 +3895,7 @@ export default function ClientBoard() {
       return payload
         .replace(/\s+/g, ' ')
         .replace(/\b\d{17,20}\b/g, job.deliveryTargetLabel || 'Channel-ID')
+        .replace(/\/Users\/[^\s]+/g, 'lokaler Pfad')
         .trim()
     }
 
@@ -3905,6 +3906,22 @@ export default function ClientBoard() {
     if (delivery) bits.push(`Delivery: ${delivery}`)
 
     return bits.join(' · ') || 'Keine technischen Details hinterlegt.'
+  }
+
+  function cronActionDetailsBullets(job: CronJob) {
+    const raw = cronActionDetails(job)
+    const normalized = raw
+      .replace(/\s*;\s*/g, '. ')
+      .replace(/\s*\)\s*/g, ') ')
+      .trim()
+
+    const parts = normalized
+      .split(/(?<=[.!?])\s+/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+
+    if (parts.length <= 1) return [normalized]
+    return parts.slice(0, 8)
   }
 
 
@@ -5266,9 +5283,9 @@ export default function ClientBoard() {
                     <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Delivery:</strong> {selectedCronJob.job.deliveryMode || '–'} {selectedCronJob.job.deliveryChannel ? `· ${selectedCronJob.job.deliveryChannel}` : ''}</div>
                     <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Discord-Channel:</strong> {selectedCronJob.job.deliveryTargetLabel || selectedCronJob.job.deliveryTo || '–'}</div>
                     <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Consecutive Errors:</strong> {typeof selectedCronJob.job.consecutiveErrors === 'number' ? selectedCronJob.job.consecutiveErrors : 0}</div>
-                    <div style={{ gridColumn: '1 / -1', background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 10 }}>
+                    <div style={{ gridColumn: '1 / -1', background: 'linear-gradient(180deg, #16202d 0%, #121a24 100%)', border: '1px solid #2c3e50', borderRadius: 10, padding: 12 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                        <strong>Was macht der Job konkret?</strong>
+                        <strong style={{ color: '#dbeafe' }}>Was macht der Job konkret?</strong>
                         <button
                           type="button"
                           style={{ ...polishedButtonStyle, padding: '3px 8px', fontSize: 11 }}
@@ -5277,9 +5294,12 @@ export default function ClientBoard() {
                           Vollansicht
                         </button>
                       </div>
-                      <div style={{ marginTop: 6, lineHeight: 1.5, fontSize: 13, opacity: 0.9 }}>
-                        {cronActionDetails(selectedCronJob.job).slice(0, 260)}
-                        {cronActionDetails(selectedCronJob.job).length > 260 ? '…' : ''}
+                      <div style={{ marginTop: 8, lineHeight: 1.55, fontSize: 13, color: '#e2e8f0' }}>
+                        {cronActionDetailsBullets(selectedCronJob.job).map((line, idx) => (
+                          <div key={`cron-detail-line-${idx}`} style={{ marginTop: idx === 0 ? 0 : 6 }}>
+                            • {line}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
