@@ -220,7 +220,7 @@ const sectionMeta: Record<Section, { label: string; hint?: string; entityType?: 
   office: { label: 'Archiv & Backoffice', hint: 'Ablage / Nebenaufgaben', entityType: 'office' },
   health: { label: 'Health', hint: 'Obsidian/Physio Problemzonen' },
   recipes: { label: 'Rezepte', hint: 'Sammlung + visuelle Karten' },
-  fundraising: { label: 'Fundraising 👍', hint: 'Gespeicherte Ideen mit Approval' },
+  fundraising: { label: 'Fundraising', hint: 'Gespeicherte Ideen mit Approval' },
   files: { label: 'Files', hint: 'Wichtige Dateien & Scripts' },
 }
 
@@ -5143,7 +5143,7 @@ export default function ClientBoard() {
               ) : (
                 fundraisingIdeas.map((idea) => (
                   <article key={idea.id} style={{ border: '1px solid #2f2f2f', borderRadius: 10, padding: 12, background: '#171717' }}>
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>👍 {idea.title}</div>
+                    <div style={{ fontWeight: 700, marginBottom: 4 }}>{idea.title}</div>
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                       <button onClick={() => void openFilePreview(idea.title, idea.path, { readOnly: true, renderMarkdown: true, hidePath: true })}>
                         Idee öffnen
