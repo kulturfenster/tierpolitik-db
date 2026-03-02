@@ -48,6 +48,7 @@ type StatusJson = {
 }
 
 type PurposeMap = Record<string, string>
+type CronNameMap = Map<string, string>
 
 const defaultPurposeMap: PurposeMap = {
   main: 'Hauptagent für direkte Zusammenarbeit und operative Steuerung',
@@ -99,10 +100,14 @@ function classifyStatus(bootstrapPending: boolean | undefined, lastActiveAgeMs: 
   return 'sleeping' as const
 }
 
-function formatLastWorkedOn(recent?: { key?: string; kind?: string; updatedAt?: number }) {
+function formatLastWorkedOn(
+  recent: { key?: string; kind?: string; updatedAt?: number } | undefined,
+  cronNameMap: CronNameMap,
+) {
   if (!recent?.kind) return 'kein Session-Kontext'
 
-  const kindLabel = recent.kind === 'direct'
+  const key = String(recent.key || '')
+  let label = recent.kind === 'direct'
     ? 'Direktchat'
     : recent.kind === 'group'
       ? 'Gruppenchat'
@@ -112,17 +117,24 @@ function formatLastWorkedOn(recent?: { key?: string; kind?: string; updatedAt?: 
           ? 'Slash-Befehl'
           : recent.kind
 
-  let context = ''
-  const key = String(recent.key || '')
-  if (key.includes(':discord:channel:')) {
+  if (key.includes(':cron:')) {
+    const cronId = key.split(':cron:')[1]?.split(':')[0]
+    if (cronId) {
+      const cronName = cronNameMap.get(cronId)
+      label = cronName ? `Cronjob „${cronName}“` : `Cronjob (${cronId.slice(0, 8)}…)`
+    }
+  } else if (key.includes(':discord:channel:')) {
     const channelId = key.split(':discord:channel:')[1]?.split(':')[0]
-    if (channelId) context = ` in Discord #${channelId}`
+    if (channelId === '1475098240578879599') label = 'Gruppenchat #coding'
+    else if (channelId === '1477029772361076806') label = 'Gruppenchat #stadtrat'
+    else if (channelId === '1472710373953114304') label = 'Gruppenchat #fundraising'
+    else if (channelId) label = `Gruppenchat Discord (#${channelId})`
   } else if (key.includes(':telegram:')) {
-    context = ' in Telegram'
+    label = 'Direktchat Telegram'
   }
 
   const when = typeof recent.updatedAt === 'number' ? formatAge(Date.now() - recent.updatedAt) : 'unbekannt'
-  return `${kindLabel}${context} · ${when}`
+  return `${label} · ${when}`
 }
 
 async function loadPurposeOverrides(): Promise<PurposeMap> {
@@ -143,6 +155,22 @@ async function loadPurposeOverrides(): Promise<PurposeMap> {
   } catch {
     return {}
   }
+}
+
+async function loadCronNameMap(): Promise<CronNameMap> {
+  const map: CronNameMap = new Map()
+  try {
+    const jobsFile = path.join(os.homedir(), '.openclaw', 'cron', 'jobs.json')
+    const raw = await readFile(jobsFile, 'utf8')
+    const parsed = JSON.parse(raw) as { jobs?: Array<{ id?: string; name?: string }> }
+    for (const job of parsed.jobs || []) {
+      if (!job?.id || !job?.name) continue
+      map.set(String(job.id), String(job.name))
+    }
+  } catch {
+    // ignore
+  }
+  return map
 }
 
 async function statusJson() {
@@ -173,7 +201,7 @@ async function statusJson() {
 
 export async function GET() {
   try {
-    const [statusRaw, purposeOverrides] = await Promise.all([statusJson(), loadPurposeOverrides()])
+    const [statusRaw, purposeOverrides, cronNameMap] = await Promise.all([statusJson(), loadPurposeOverrides(), loadCronNameMap()])
     const status = JSON.parse(statusRaw) as StatusJson
 
     const heartbeatByAgent = new Map<string, { enabled?: boolean; every?: string }>()
@@ -215,7 +243,7 @@ export async function GET() {
           heartbeat: heartbeat?.enabled ? heartbeat.every || 'aktiv' : 'disabled',
           lastActiveLabel: formatAge(agent.lastActiveAgeMs),
           sessionsCount: typeof agent.sessionsCount === 'number' ? agent.sessionsCount : 0,
-          lastWorkedOn: formatLastWorkedOn(recent),
+          lastWorkedOn: formatLastWorkedOn(recent, cronNameMap),
           lastSessionKey: recent?.key || undefined,
         }
       })
