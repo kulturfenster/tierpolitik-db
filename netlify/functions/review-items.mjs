@@ -65,7 +65,7 @@ export const handler = async (event) => {
           limit 1
         ) lr on true
         where ($1::boolean = true)
-           or coalesce(lr.status, m.status, 'new') in ('new','queued')
+           or (lr.decided_at is null and coalesce(lr.status, m.status, 'new') in ('new','queued'))
         order by coalesce(m.published_at, m.fetched_at) desc nulls last, m.updated_at desc
         limit $2`,
         [includeDecided, limit],
@@ -126,7 +126,7 @@ export const handler = async (event) => {
         language: r.language || 'de',
         title: titleFallback?.title || r.title || '',
         summary: titleFallback?.summary || r.summary || '',
-        body: r.body || '',
+        body: String(r.body || '').slice(0, 1200),
         publishedAt: r.published_at ? new Date(r.published_at).toISOString() : null,
         fetchedAt: r.fetched_at ? new Date(r.fetched_at).toISOString() : null,
         score: Number(r.score || 0),
