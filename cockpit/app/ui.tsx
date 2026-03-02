@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-type Section = 'radar' | 'tasks' | 'calendar' | 'agents' | 'projects' | 'content' | 'memory' | 'docs' | 'people' | 'office' | 'health' | 'files'
+type Section = 'radar' | 'tasks' | 'calendar' | 'agents' | 'projects' | 'content' | 'memory' | 'docs' | 'people' | 'office' | 'health' | 'recipes' | 'files'
 type EntityType = 'project' | 'content' | 'client' | 'memory' | 'doc' | 'person' | 'office'
 
 type Task = {
@@ -195,7 +195,7 @@ function radarFollowupDeadlineIso(urgency: RadarItem['urgency']) {
   return dueAt.toISOString()
 }
 
-const sectionOrder: Section[] = ['radar', 'tasks', 'calendar', 'agents', 'content', 'projects', 'docs', 'memory', 'people', 'office', 'health', 'files']
+const sectionOrder: Section[] = ['radar', 'tasks', 'calendar', 'agents', 'content', 'projects', 'docs', 'memory', 'people', 'office', 'health', 'recipes', 'files']
 
 const sectionMeta: Record<Section, { label: string; hint?: string; entityType?: EntityType }> = {
   radar: { label: 'Radar', hint: 'Signale & Entscheide' },
@@ -209,6 +209,7 @@ const sectionMeta: Record<Section, { label: string; hint?: string; entityType?: 
   people: { label: 'Stakeholder', hint: 'Personen / Rollen', entityType: 'person' },
   office: { label: 'Archiv & Backoffice', hint: 'Ablage / Nebenaufgaben', entityType: 'office' },
   health: { label: 'Health', hint: 'Obsidian/Physio Problemzonen' },
+  recipes: { label: 'Rezepte', hint: 'Sammlung + visuelle Karten' },
   files: { label: 'Files', hint: 'Wichtige Dateien & Scripts' },
 }
 
@@ -2182,6 +2183,8 @@ export default function ClientBoard() {
       setKnowledgeError(null)
       knowledgeAutoRefreshAtRef.current = Date.now()
       void loadKnowledgeIndex()
+    } else if (section === 'recipes') {
+      setBoardError(null)
     } else {
       const entityType = sectionMeta[section].entityType!
       setEntities(entitiesCacheRef.current[entityType] || [])
@@ -2292,6 +2295,11 @@ export default function ClientBoard() {
       })
       knowledgeAutoRefreshAtRef.current = Date.now()
       void loadKnowledgeIndex()
+      return
+    }
+
+    if (section === 'recipes') {
+      setBoardError(null)
       return
     }
 
@@ -5041,6 +5049,35 @@ export default function ClientBoard() {
               </div>
             )}
 
+          </>
+        ) : section === 'recipes' ? (
+          <>
+            <div style={{ marginBottom: 12, fontSize: 13, opacity: 0.85 }}>
+              Rezeptbereich im Cockpit – mit Bildvorschau und Direktzugriff auf die Rezeptdateien.
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 14 }}>
+              <article style={{ background: 'linear-gradient(180deg, #1f1f1f 0%, #191919 100%)', border: '1px solid #343434', borderRadius: 14, overflow: 'hidden' }}>
+                <img
+                  src="/recipes/protein-cheesecake.jpg"
+                  alt="Protein-Cheesecake"
+                  style={{ width: '100%', height: 220, objectFit: 'cover', display: 'block' }}
+                />
+                <div style={{ padding: 12 }}>
+                  <h3 style={{ margin: '0 0 6px 0' }}>Protein-Cheesecake (vegan)</h3>
+                  <div style={{ fontSize: 13, opacity: 0.86, marginBottom: 10 }}>
+                    Mit Tofu, Datteln, Cashews, Kichererbsen und Kokosmilch – ohne stimulierende Zutaten.
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <button onClick={() => void openFilePreview('protein-cheesecake-vegan.md', 'recipes/protein-cheesecake-vegan.md', { readOnly: true, renderMarkdown: true })}>
+                      Rezept öffnen
+                    </button>
+                    <button onClick={() => void openFilePreview('db.json', 'recipes/db.json', { readOnly: true })}>
+                      Rezept-DB öffnen
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
           </>
         ) : section === 'memory' ? (
           <>
