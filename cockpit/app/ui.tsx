@@ -4773,22 +4773,7 @@ export default function ClientBoard() {
                 title="Globale Heartbeats deaktivieren"
               >
                 {agentsControlPending === 'heartbeat-disable' ? 'Deaktiviere…' : 'Heartbeat aus'}
-              </button>
-              <button
-                onClick={() => { void triggerAgentControl('gateway-restart') }}
-                disabled={!!agentsControlPending}
-                title="OpenClaw Gateway neu starten"
-              >
-                {agentsControlPending === 'gateway-restart' ? 'Starte neu…' : 'Gateway restart'}
-              </button>
-              <button
-                onClick={() => { void triggerAgentControl('cockpit-self-heal') }}
-                disabled={!!agentsControlPending}
-                title="Rebuild + Restart vom Cockpit (gegen Chunk/Client-Fehler)"
-              >
-                {agentsControlPending === 'cockpit-self-heal' ? 'Heile…' : 'Cockpit Self-Heal'}
-              </button>
-            </div>
+              </button>            </div>
             {agentsControlError && (
               <div style={{ marginBottom: 10, padding: '8px 10px', borderRadius: 8, border: '1px solid #7f1d1d', background: '#2b1111', color: '#fecaca', fontSize: 13 }}>
                 {agentsControlError}
@@ -4809,7 +4794,7 @@ export default function ClientBoard() {
                       <div style={{ fontSize: 12, opacity: 0.75 }}>Model: {agent.model || 'unbekannt'}</div>
                     </div>
                     <span style={{ fontSize: 12, padding: '4px 8px', borderRadius: 999, border: '1px solid #3a3a3a', background: '#181818' }}>
-                      {agent.status}
+                      {agent.status === 'bootstrapping' ? 'starting' : agent.status}
                     </span>
                   </div>
                   <div style={{ marginTop: 8, fontSize: 12, opacity: 0.86 }}>
