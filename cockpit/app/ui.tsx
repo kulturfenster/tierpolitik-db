@@ -1482,6 +1482,7 @@ export default function ClientBoard() {
   const [fundraisingLoading, setFundraisingLoading] = useState(false)
   const [fundraisingError, setFundraisingError] = useState<string | null>(null)
   const [fundraisingDeletePending, setFundraisingDeletePending] = useState<string | null>(null)
+  const [fundraisingSelectedIndex, setFundraisingSelectedIndex] = useState(0)
 
   function isOfflineClient() {
     return typeof navigator !== 'undefined' && !navigator.onLine
@@ -2005,6 +2006,14 @@ export default function ClientBoard() {
     }
   }
 
+  useEffect(() => {
+    if (fundraisingIdeas.length === 0) {
+      setFundraisingSelectedIndex(0)
+      return
+    }
+    setFundraisingSelectedIndex((prev) => Math.max(0, Math.min(prev, fundraisingIdeas.length - 1)))
+  }, [fundraisingIdeas])
+
   async function triggerAgentControl(action: 'heartbeat-enable' | 'heartbeat-disable' | 'gateway-restart' | 'cockpit-self-heal') {
     if (agentsControlPending) return
 
@@ -2244,6 +2253,7 @@ export default function ClientBoard() {
       setBoardError(null)
     } else if (section === 'fundraising') {
       setBoardError(null)
+      setFundraisingSelectedIndex(0)
       void loadFundraisingIdeas()
     } else {
       const entityType = sectionMeta[section].entityType!
@@ -2930,6 +2940,33 @@ export default function ClientBoard() {
         return
       }
 
+      if (section === 'fundraising' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (key === 'j' || key === 'arrowdown') {
+          e.preventDefault()
+          setFundraisingSelectedIndex((prev) => Math.min(prev + 1, Math.max(0, fundraisingIdeas.length - 1)))
+          return
+        }
+        if (key === 'k' || key === 'arrowup') {
+          e.preventDefault()
+          setFundraisingSelectedIndex((prev) => Math.max(prev - 1, 0))
+          return
+        }
+        if (key === 'enter') {
+          const idea = fundraisingIdeas[fundraisingSelectedIndex]
+          if (!idea) return
+          e.preventDefault()
+          void openFilePreview(idea.title, idea.path, { readOnly: true, renderMarkdown: true, hidePath: true })
+          return
+        }
+        if (key === 'd') {
+          const idea = fundraisingIdeas[fundraisingSelectedIndex]
+          if (!idea) return
+          e.preventDefault()
+          void deleteFundraisingIdea(idea.sourceFile)
+          return
+        }
+      }
+
       if (isManualRefreshShortcut) {
         e.preventDefault()
         refreshCurrentSection({ forceRadar: true })
@@ -3063,6 +3100,9 @@ export default function ClientBoard() {
     filePreview.open,
     selectedCronJob,
     cronSummaryModal,
+    fundraisingIdeas,
+    fundraisingSelectedIndex,
+    fundraisingDeletePending,
   ])
 
   const visible = useMemo(() => (filter === 'all' ? tasks : tasks.filter((t) => t.assignee === filter)), [tasks, filter])
@@ -5141,8 +5181,8 @@ export default function ClientBoard() {
               {fundraisingIdeas.length === 0 ? (
                 <div style={{ opacity: 0.75 }} />
               ) : (
-                fundraisingIdeas.map((idea) => (
-                  <article key={idea.id} style={{ border: '1px solid #2f2f2f', borderRadius: 10, padding: 12, background: '#171717' }}>
+                fundraisingIdeas.map((idea, idx) => (
+                  <article key={idea.id} style={{ border: idx === fundraisingSelectedIndex ? '1px solid #6aa2ff' : '1px solid #2f2f2f', borderRadius: 10, padding: 12, background: idx === fundraisingSelectedIndex ? '#1a2230' : '#171717' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                       <button
                         onClick={() => void openFilePreview(idea.title, idea.path, { readOnly: true, renderMarkdown: true, hidePath: true })}
@@ -5156,9 +5196,27 @@ export default function ClientBoard() {
                         disabled={fundraisingDeletePending === idea.sourceFile}
                         title="Idee löschen"
                         aria-label="Idee löschen"
-                        style={{ minWidth: 44 }}
+                        style={{
+                          width: 28,
+                          height: 28,
+                          minWidth: 28,
+                          borderRadius: '999px',
+                          padding: 0,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          lineHeight: 1,
+                          border: 'none',
+                          background: '#2a2a2a',
+                          boxShadow: 'none',
+                          outline: 'none',
+                          appearance: 'none',
+                          WebkitAppearance: 'none',
+                          fontSize: 14,
+                          fontWeight: 700,
+                        }}
                       >
-                        {fundraisingDeletePending === idea.sourceFile ? '…' : '🗑️'}
+                        {fundraisingDeletePending === idea.sourceFile ? '…' : '×'}
                       </button>
                     </div>
                   </article>
