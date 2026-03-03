@@ -1,22 +1,51 @@
 [
   {
-    "id": "ch-police-portal",
-    "name": "Police.be.ch Medienmitteilungen (Suche Stallbrand)",
-    "type": "web_search",
-    "url": "https://www.police.be.ch/",
-    "query_hint": "Stallbrand"
-  },
-  {
-    "id": "ch-feuerwehrverband-news",
-    "name": "Schweizer Feuerwehr-News (allgemein, für Brandereignisse)",
-    "type": "web",
-    "url": "https://www.swissfire.ch/"
-  },
-  {
     "id": "ch-srf-search",
     "name": "SRF Suche (Stallbrand Schweiz)",
     "type": "web_search",
     "url": "https://www.srf.ch/suche?q=Stallbrand%20Schweiz",
     "query_hint": "Stallbrand Schweiz"
+  },
+  {
+    "id": "ch-be-police-news",
+    "name": "Kantonspolizei Bern – News",
+    "type": "web",
+    "url": "https://www.police.be.ch/de/start/medienmitteilungen.html"
+  },
+  {
+    "id": "ch-zh-police-news",
+    "name": "Stadtpolizei Zürich – Medien",
+    "type": "web",
+    "url": "https://www.stadt-zuerich.ch/pd/de/index/stadtpolizei_zuerich/medien.html"
+  },
+  {
+    "id": "ch-lu-police-news",
+    "name": "Polizei Luzern – Medienmitteilungen",
+    "type": "web",
+    "url": "https://polizei.lu.ch/aktuelles/medienmitteilungen"
+  },
+  {
+    "id": "ch-ag-police-news",
+    "name": "Kantonspolizei Aargau – Medienmitteilungen",
+    "type": "web",
+    "url": "https://www.ag.ch/de/verwaltung/dvi/kantonspolizei/medien"
+  },
+  {
+    "id": "ch-swissfire",
+    "name": "Swissfire – News",
+    "type": "web",
+    "url": "https://www.swissfire.ch/"
+  },
+  {
+    "id": "ch-20min-search",
+    "name": "20 Minuten Suche (Stallbrand)",
+    "type": "web_search",
+    "url": "https://www.20min.ch/search?q=Stallbrand"
+  },
+  {
+    "id": "ch-nzz-search",
+    "name": "NZZ Suche (Stallbrand)",
+    "type": "web_search",
+    "url": "https://www.nzz.ch/suche?q=Stallbrand"
   }
 ]
