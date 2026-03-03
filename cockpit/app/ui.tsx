@@ -4542,6 +4542,13 @@ export default function ClientBoard() {
               })
 
               const allAgents = [...new Set([
+                'main',
+                'tif-coding',
+                'tif-health',
+                'tif-medien',
+                'tif-politik',
+                'tif-text',
+                'tif-website',
                 ...agentsSummary.map((a) => a.id),
                 ...all.map((t) => String(t.assignee || 'main')),
               ])]
