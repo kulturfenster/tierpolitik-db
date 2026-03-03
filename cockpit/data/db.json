@@ -134,12 +134,12 @@
       "priority": "high",
       "assignee": "ALF",
       "createdAt": "2026-02-16T10:39:00.000Z",
-      "updatedAt": "2026-03-03T22:52:37.986457Z",
+      "updatedAt": "2026-03-03T22:59:35.606135Z",
       "area": "ops",
       "tocAxis": "repraesentation",
       "impact": "high",
       "deadline": null,
-      "notes": "Crawler v0 scaffold umgesetzt: source registry + raw fetch pipeline. Dateien: PARA/Projects/Stallbraende-Schweiz/data/stallbraende/sources.v0.json und scripts/crawler_v0.py. Raw output: events.raw.v0.jsonl\n[heartbeat 23:51] sources.v0 auf 8 Seed-Quellen erweitert (BE/ZH/LU/AG Polizei + SRF/20min/NZZ/Swissfire) und crawler_v0 erneut ausgeführt; raw output aktualisiert."
+      "notes": "Crawler v0 scaffold umgesetzt: source registry + raw fetch pipeline. Dateien: PARA/Projects/Stallbraende-Schweiz/data/stallbraende/sources.v0.json und scripts/crawler_v0.py. Raw output: events.raw.v0.jsonl\n[heartbeat 23:51] sources.v0 auf 8 Seed-Quellen erweitert (BE/ZH/LU/AG Polizei + SRF/20min/NZZ/Swissfire) und crawler_v0 erneut ausgeführt; raw output aktualisiert.\n[heartbeat 23:58] extractor_v0 ergänzt (events.candidates.v0.jsonl). Ergebnis aktuell 0 Kandidaten, da Seed-Crawl nur Landingpages erfasst. Nächster Schritt: source-spezifische Link-Extraktion + Artikel-Detailcrawl (v1)."
     },
     {
       "id": "task_stallbraende_003",
