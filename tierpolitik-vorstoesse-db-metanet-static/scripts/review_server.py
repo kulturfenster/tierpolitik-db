@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import os
+import subprocess
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
@@ -8,6 +9,16 @@ import psycopg
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def refresh_exports():
+    py = os.environ.get('TPM_PYTHON', str(ROOT / '.venv' / 'bin' / 'python'))
+    cmds = [
+        [py, str(ROOT / 'scripts' / 'export_review_inbox.py')],
+        [py, str(ROOT / 'scripts' / 'export_home_data.py')],
+    ]
+    for cmd in cmds:
+        subprocess.run(cmd, cwd=str(ROOT), check=False)
 
 
 class ReviewHandler(SimpleHTTPRequestHandler):
@@ -31,24 +42,12 @@ class ReviewHandler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
-        if self.path != '/api/review-decision':
+        if self.path not in {'/api/review-decision', '/.netlify/functions/feedback-submit'}:
             self.send_error(404, 'Not found')
             return
 
         length = int(self.headers.get('Content-Length', '0'))
         raw = self.rfile.read(length or 0)
-        try:
-            payload = json.loads(raw.decode('utf-8'))
-            decision = (payload.get('decision') or '').strip().lower()
-            item_id = payload.get('id')
-            if decision not in {'approved', 'rejected', 'queued'}:
-                raise ValueError('invalid decision')
-            if not item_id or ':' not in item_id:
-                raise ValueError('invalid id')
-            source_key, external_id = item_id.split(':', 1)
-        except Exception as e:
-            self._json({'ok': False, 'error': str(e)}, code=400)
-            return
 
         try:
             load_dotenv(ROOT / '.env')
@@ -56,29 +55,86 @@ class ReviewHandler(SimpleHTTPRequestHandler):
             if not db_url:
                 raise RuntimeError('DATABASE_URL missing')
 
+            payload = json.loads(raw.decode('utf-8') or '{}')
+
+            if self.path == '/api/review-decision':
+                decision = (payload.get('decision') or '').strip().lower()
+                item_id = payload.get('id')
+                if decision not in {'approved', 'rejected', 'queued'}:
+                    raise ValueError('invalid decision')
+                if not item_id or ':' not in item_id:
+                    raise ValueError('invalid id')
+                source_key, external_id = item_id.split(':', 1)
+
+                with psycopg.connect(db_url) as conn, conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        update politics_monitor.pm_items i
+                        set review_status = %s,
+                            reviewed_at = case when %s = 'queued' then null else now() end,
+                            updated_at = now()
+                        from politics_monitor.pm_sources s
+                        where i.source_id = s.id
+                          and s.source_key = %s
+                          and i.external_id = %s
+                        returning i.id
+                        """,
+                        (decision, decision, source_key, external_id),
+                    )
+                    row = cur.fetchone()
+                    conn.commit()
+
+                if not row:
+                    self._json({'ok': False, 'error': 'item not found'}, code=404)
+                    return
+
+                refresh_exports()
+                self._json({'ok': True, 'id': item_id, 'decision': decision})
+                return
+
+            # Home feedback endpoint: move item back to review and hide from home
+            item_id = str(payload.get('id') or '').strip().lower()
+            external_id = item_id.removeprefix('vp-') if item_id.startswith('vp-') else item_id
+            if not external_id:
+                raise ValueError('invalid id')
+
             with psycopg.connect(db_url) as conn, conn.cursor() as cur:
                 cur.execute(
                     """
-                    update politics_monitor.pm_items i
-                    set review_status = %s,
-                        reviewed_at = case when %s = 'queued' then null else now() end,
+                    update politics_monitor.pm_items
+                    set home_visible = false,
+                        review_status = 'queued',
+                        reviewed_at = null,
                         updated_at = now()
-                    from politics_monitor.pm_sources s
-                    where i.source_id = s.id
-                      and s.source_key = %s
-                      and i.external_id = %s
-                    returning i.id
+                    where lower(external_id) = %s
+                    returning id
                     """,
-                    (decision, decision, source_key, external_id),
+                    (external_id,),
                 )
                 row = cur.fetchone()
+                if row:
+                    cur.execute(
+                        """
+                        insert into politics_monitor.pm_classification
+                        (item_id, is_animal_related, label, confidence, reason, classifier, classified_at, updated_at)
+                        values (%s, null, 'unsure', 0.6, 'user_feedback', 'rules_v2_strict', now(), now())
+                        on conflict (item_id) do update set
+                          label = 'unsure',
+                          is_animal_related = null,
+                          reason = 'user_feedback',
+                          confidence = greatest(coalesce(politics_monitor.pm_classification.confidence,0),0.6),
+                          updated_at = now()
+                        """,
+                        (row[0],),
+                    )
                 conn.commit()
 
             if not row:
                 self._json({'ok': False, 'error': 'item not found'}, code=404)
                 return
 
-            self._json({'ok': True, 'id': item_id, 'decision': decision})
+            refresh_exports()
+            self._json({'ok': True, 'id': item_id, 'action': 'sent_to_review'})
         except Exception as e:
             self._json({'ok': False, 'error': str(e)}, code=500)
 
