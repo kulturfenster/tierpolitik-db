@@ -9,7 +9,8 @@ insert into politics_monitor.pm_sources
 (source_key, name, level, country, canton, parser_type, base_url, list_url, is_active, run_interval_minutes)
 values
 ('ch-bund-curia-vista','Bund – Curia Vista (Parlament.ch)','bund','CH',null,'html_list','https://www.parlament.ch','https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista',true,1440),
-('ch-be-grosser-rat','Kanton Bern – Grosser Rat Vorstösse','kanton','CH','BE','html_list','https://www.gr-be.ch','https://www.gr-be.ch/de/start/geschaefte/geschaefte-suchen.html',true,1440),
+('ch-be-grosser-rat','Kanton Bern – Grosser Rat Vorstösse','kanton','CH','BE','html_list','https://www.gr.be.ch','https://www.gr.be.ch/de/start/geschaefte/geschaeftssuche',true,1440),
+('ch-be-grosser-rat-ogd','Kanton Bern – Grosser Rat OGD Geschäfte','kanton','CH','BE','api_json','https://ogd.parl.apps.be.ch','https://ogd.parl.apps.be.ch/data/geschaeft.json',true,1440),
 ('ch-bern-stadtrat','Stadt Bern – Stadtrat Vorstösse','gemeinde','CH','BE','html_list','https://stadtrat.bern.ch','https://stadtrat.bern.ch/de/geschaefte/suche',true,1440),
 ('ch-zh-gemeinderat-api','Stadt Zürich – Gemeinderat Geschäfte (API)','gemeinde','CH','ZH','api_json','https://www.gemeinderat-zuerich.ch','https://www.gemeinderat-zuerich.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php?search=done&page=1',true,1440)
 on conflict (source_key) do update set
