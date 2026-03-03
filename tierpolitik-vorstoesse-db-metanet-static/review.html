@@ -29,7 +29,7 @@
   </p>
   <table>
     <thead>
-      <tr><th>Titel</th><th>Quelle</th><th>Label</th><th>Status</th><th>Aktion</th></tr>
+      <tr><th>Titel</th><th>Quelle</th><th>Tierbezug</th><th>Status</th><th>Aktion</th></tr>
     </thead>
     <tbody id="rows"></tbody>
   </table>
@@ -74,9 +74,9 @@ function render(){
     if(d!=='queued') tr.classList.add('row-done');
     if(i===state.selected) tr.classList.add('row-selected');
     tr.innerHTML=`
-      <td><strong>${it.title||'(ohne Titel)'}</strong><br><small>${it.summary||''}</small><br><a target="_blank" href="${it.url||'#'}">Original</a></td>
+      <td><strong>${it.title||'(ohne Titel)'}</strong><br><small>${it.summary||''}</small><br><small><b>Tierbezug:</b> ${it.label==='yes'?'ja':(it.label==='unsure'?'unsicher':'nein')}</small><br><a target="_blank" href="${it.url||'#'}">Original</a></td>
       <td>${it.source_key}<br><small>${it.external_id}</small></td>
-      <td class="${it.label}">${it.label}${it.confidence?` (${it.confidence.toFixed(2)})`:''}<br><small>${it.reason||''}</small></td>
+      <td class="${it.label}"><b>${it.label}</b>${it.confidence?` (${it.confidence.toFixed(2)})`:''}<br><small>${it.reason||''}</small></td>
       <td>${d}</td>
       <td>
         <button data-id="${it.id}" data-v="approved">Approve</button>
