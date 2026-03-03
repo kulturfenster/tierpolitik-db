@@ -106,6 +106,13 @@ def main():
                                 body_parts.append(f"{n}: {v}")
                         body = '\n'.join(body_parts) or None
 
+                        persons = []
+                        for key in ['Erstunterzeichner', 'Mitunterzeichner']:
+                            v = (first_text(g, key) or '').strip()
+                            if v:
+                                persons.extend([p.strip() for p in v.replace(';', ',').split(',') if p.strip()])
+                        persons = list(dict.fromkeys(persons))[:30] if persons else None
+
                         source_url = f"https://www.gemeinderat-zuerich.ch/geschaefte/detail.php?gid={ext}"
                         xml_payload = ET.tostring(g, encoding='unicode')
                         raw_hash = hashlib.sha256(xml_payload.encode('utf-8')).hexdigest()
@@ -122,8 +129,8 @@ def main():
                         cur.execute(
                             """
                             insert into politics_monitor.pm_items
-                            (source_id, external_id, title, body, item_type, status, submitted_at, canton, municipality, source_url, first_seen_at, last_seen_at, updated_at, language)
-                            values (%s,%s,%s,%s,%s,%s,%s,'ZH','Zürich',%s,now(),now(),now(),'de')
+                            (source_id, external_id, title, body, item_type, status, submitted_at, persons, canton, municipality, source_url, first_seen_at, last_seen_at, updated_at, language)
+                            values (%s,%s,%s,%s,%s,%s,%s,%s,'ZH','Zürich',%s,now(),now(),now(),'de')
                             on conflict (source_id, external_id)
                             do update set
                               title = excluded.title,
@@ -131,12 +138,13 @@ def main():
                               item_type = excluded.item_type,
                               status = excluded.status,
                               submitted_at = excluded.submitted_at,
+                              persons = excluded.persons,
                               canton = 'ZH', municipality = 'Zürich',
                               source_url = excluded.source_url,
                               last_seen_at = now(),
                               updated_at = now()
                             """,
-                            (source_id, ext, title, body, item_type, status, submitted_at, source_url),
+                            (source_id, ext, title, body, item_type, status, submitted_at, persons, source_url),
                         )
                         if cur.rowcount == 1:
                             inserted += 1

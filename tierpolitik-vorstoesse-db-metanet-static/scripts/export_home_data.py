@@ -46,7 +46,7 @@ def main():
             """
             select i.external_id, i.title, i.body, i.item_type, i.status, i.submitted_at,
                    i.updated_at::date, i.source_url, i.canton, i.municipality,
-                   coalesce(c.label,'no') as label, c.reason, s.name as source_name
+                   coalesce(c.label,'no') as label, c.reason, s.name as source_name, i.persons
             from politics_monitor.pm_items i
             join politics_monitor.pm_sources s on s.id = i.source_id
             left join politics_monitor.pm_classification c on c.item_id = i.id
@@ -61,7 +61,13 @@ def main():
 
     out = []
     for r in rows:
-        ext, title, body, item_type, status, sub_date, upd_date, url, canton, municipality, label, reason, source_name = r
+        ext, title, body, item_type, status, sub_date, upd_date, url, canton, municipality, label, reason, source_name, persons = r
+        submitters = []
+        if persons:
+            submitters = [{'name': p, 'rolle': 'Einreichend', 'partei': 'Unbekannt'} for p in persons[:8]]
+        else:
+            submitters = [{'name': source_name or 'Unbekannt', 'rolle': 'Quelle', 'partei': 'Unbekannt'}]
+
         out.append({
             'id': f'vp-{str(ext).lower()}',
             'titel': title or f'Vorstoss {ext}',
@@ -76,7 +82,7 @@ def main():
             'datumAktualisiert': iso_or_today(upd_date),
             'themen': ['Tiere', 'Tierpolitik'] if label == 'yes' else ['Tiere (unsicher)'],
             'schlagwoerter': [k for k in ['zoo', 'wildtier', 'schlachthof', 'tierschutz'] if (title or '').lower().find(k) >= 0] or ['tierpolitik'],
-            'einreichende': [{'name': source_name or 'Unbekannt', 'rolle': 'Gemeinderat', 'partei': 'Unbekannt'}],
+            'einreichende': submitters,
             'linkGeschaeft': url,
             'resultate': [],
             'medien': [],

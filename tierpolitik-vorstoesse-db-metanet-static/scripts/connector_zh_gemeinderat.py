@@ -68,6 +68,12 @@ def main():
                         if v:
                             body_parts.append(f"{k}: {v}")
                     body = "\n".join(body_parts) or None
+                    persons = []
+                    for key in ['Erstunterzeichner', 'Mitunterzeichner']:
+                        v = (it.get(key) or '').strip()
+                        if v:
+                            persons.extend([p.strip() for p in v.replace(';', ',').split(',') if p.strip()])
+                    persons = list(dict.fromkeys(persons))[:30] if persons else None
                     item_type = (it.get('Geschaeftsart') or '').strip() or None
                     status = (it.get('Geschaeftsstatus') or '').strip() or None
                     grnr = (it.get('GRNr') or '').strip()
@@ -76,14 +82,15 @@ def main():
                     cur.execute(
                         """
                         insert into politics_monitor.pm_items
-                        (source_id, external_id, title, body, item_type, status, canton, municipality, source_url, first_seen_at, last_seen_at, updated_at, language, review_status)
-                        values (%s,%s,%s,%s,%s,%s,'ZH','Zürich',%s,now(),now(),now(),'de','queued')
+                        (source_id, external_id, title, body, item_type, status, persons, canton, municipality, source_url, first_seen_at, last_seen_at, updated_at, language, review_status)
+                        values (%s,%s,%s,%s,%s,%s,%s,'ZH','Zürich',%s,now(),now(),now(),'de','queued')
                         on conflict (source_id, external_id)
                         do update set
                           title = excluded.title,
                           body = excluded.body,
                           item_type = excluded.item_type,
                           status = excluded.status,
+                          persons = excluded.persons,
                           canton = 'ZH',
                           municipality = 'Zürich',
                           source_url = excluded.source_url,
@@ -91,7 +98,7 @@ def main():
                           updated_at = now(),
                           review_status = case when politics_monitor.pm_items.review_status='queued' then 'queued' else politics_monitor.pm_items.review_status end
                         """,
-                        (source_id, ext, title, body, item_type, status, source_url),
+                        (source_id, ext, title, body, item_type, status, persons, source_url),
                     )
                     if cur.rowcount == 1:
                         inserted += 1

@@ -107,12 +107,15 @@ def main():
                     status = (it.get("BusinessStatusText") or "").strip() or None
                     submitted_at = parse_date(it.get("SubmissionDate"))
                     source_url = f"https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId={external_id}"
+                    submitted_by = (it.get("SubmittedBy") or "").strip()
+                    persons = [p.strip() for p in submitted_by.replace(";", ",").split(",") if p.strip()]
+                    persons = persons[:20] if persons else None
 
                     cur.execute(
                         """
                         insert into politics_monitor.pm_items
-                        (source_id, external_id, title, body, item_type, status, submitted_at, source_url, first_seen_at, last_seen_at, updated_at, language)
-                        values (%s, %s, %s, %s, %s, %s, %s, %s, now(), now(), now(), 'de')
+                        (source_id, external_id, title, body, item_type, status, submitted_at, persons, source_url, first_seen_at, last_seen_at, updated_at, language)
+                        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, now(), now(), now(), 'de')
                         on conflict (source_id, external_id)
                         do update set
                           title = excluded.title,
@@ -120,11 +123,12 @@ def main():
                           item_type = excluded.item_type,
                           status = excluded.status,
                           submitted_at = excluded.submitted_at,
+                          persons = excluded.persons,
                           source_url = excluded.source_url,
                           last_seen_at = now(),
                           updated_at = now()
                         """,
-                        (source_id, external_id, title, body, item_type, status, submitted_at, source_url),
+                        (source_id, external_id, title, body, item_type, status, submitted_at, persons, source_url),
                     )
                     if cur.rowcount == 1:
                         inserted += 1
