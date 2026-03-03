@@ -4603,13 +4603,6 @@ export default function ClientBoard() {
               >
                 {taskCreatePending ? 'Erstelle…' : 'Task erstellen'}
               </button>
-              <button
-                style={polishedButtonStyle}
-                disabled={taskCreatePending}
-                onClick={() => void createAgentTask({ title: '2026.SR.0019 – Tierpark Bern: Welche Alternativen zur Tötung überzähliger Tiere gibt es?', assignee: 'tif-website', status: 'doing' })}
-              >
-                SR.0019 für webmaster
-              </button>
             </div>
 
             {(() => {
