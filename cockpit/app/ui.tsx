@@ -4581,51 +4581,82 @@ export default function ClientBoard() {
               }
 
               return (
-                <div style={{ display: 'grid', gap: 12 }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {allAgents.map((id) => (
-                      <span key={id} style={{ border: '1px solid #3a3a3a', borderRadius: 999, padding: '4px 8px', fontSize: 12, opacity: 0.9 }}>
-                        {agentEmoji(id)} {id.replace(/^tif-/, '')}
-                      </span>
-                    ))}
+                <>
+                  <div style={{ display: 'grid', gap: 12 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      {allAgents.map((id) => (
+                        <span key={id} style={{ border: '1px solid #3a3a3a', borderRadius: 999, padding: '4px 8px', fontSize: 12, opacity: 0.9 }}>
+                          {agentEmoji(id)} {id.replace(/^tif-/, '')}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 12 }}>
+                      {columns.map((col) => {
+                        const items = all.filter((t) => String(t.status || 'open') === col.key)
+                        return (
+                          <div
+                            key={col.key}
+                            onDragOver={(e) => { e.preventDefault() }}
+                            onDrop={() => { if (dragTaskId) { moveTo(dragTaskId, col.key); setDragTaskId(null) } }}
+                            style={{ background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 10, minHeight: 220 }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                              <strong>{col.label}</strong>
+                              <span style={{ fontSize: 12, opacity: 0.7 }}>{items.length}</span>
+                            </div>
+
+                            <div style={{ display: 'grid', gap: 8 }}>
+                              {items.map((t) => (
+                                <div
+                                  key={t.id}
+                                  draggable
+                                  onDragStart={() => setDragTaskId(t.id)}
+                                  onDragEnd={() => setDragTaskId(null)}
+                                  style={{ border: '1px solid #3a3a3a', borderRadius: 8, padding: 8, background: '#181818', cursor: 'grab', opacity: taskActionPending[t.id] ? 0.6 : 1 }}
+                                >
+                                  <div style={{ fontWeight: 600, marginBottom: 4 }}>{t.title}</div>
+                                  <div style={{ fontSize: 12, opacity: 0.82 }}>{agentEmoji(String(t.assignee || 'main'))} {String(t.assignee || 'main').replace(/^tif-/, '')} · ⚡ {t.priority}</div>
+                                  <div style={{ marginTop: 6, fontSize: 11, opacity: 0.65 }}>{statusMap[String(t.status || 'open')] || String(t.status || '')}</div>
+                                </div>
+                              ))}
+                              {items.length === 0 && <div style={{ fontSize: 12, opacity: 0.5 }}>Leer</div>}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: 12 }}>
-                    {columns.map((col) => {
-                      const items = all.filter((t) => String(t.status || 'open') === col.key)
-                      return (
-                        <div
-                          key={col.key}
-                          onDragOver={(e) => { e.preventDefault() }}
-                          onDrop={() => { if (dragTaskId) { moveTo(dragTaskId, col.key); setDragTaskId(null) } }}
-                          style={{ background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 10, minHeight: 220 }}
-                        >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                            <strong>{col.label}</strong>
-                            <span style={{ fontSize: 12, opacity: 0.7 }}>{items.length}</span>
-                          </div>
+                  <div style={{ marginTop: 16, background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <strong>Someday</strong>
+                <div style={{ fontSize: 12, opacity: 0.72 }}>{visibleSomedayItems.length}</div>
+              </div>
 
-                          <div style={{ display: 'grid', gap: 8 }}>
-                            {items.map((t) => (
-                              <div
-                                key={t.id}
-                                draggable
-                                onDragStart={() => setDragTaskId(t.id)}
-                                onDragEnd={() => setDragTaskId(null)}
-                                style={{ border: '1px solid #3a3a3a', borderRadius: 8, padding: 8, background: '#181818', cursor: 'grab', opacity: taskActionPending[t.id] ? 0.6 : 1 }}
-                              >
-                                <div style={{ fontWeight: 600, marginBottom: 4 }}>{t.title}</div>
-                                <div style={{ fontSize: 12, opacity: 0.82 }}>{agentEmoji(String(t.assignee || 'main'))} {String(t.assignee || 'main').replace(/^tif-/, '')} · ⚡ {t.priority}</div>
-                                <div style={{ marginTop: 6, fontSize: 11, opacity: 0.65 }}>{statusMap[String(t.status || 'open')] || String(t.status || '')}</div>
-                              </div>
-                            ))}
-                            {items.length === 0 && <div style={{ fontSize: 12, opacity: 0.5 }}>Leer</div>}
-                          </div>
-                        </div>
-                      )
-                    })}
+              {somedayError && (
+                <div style={{ fontSize: 12, color: '#fca5a5', marginBottom: 8 }}>{somedayError}</div>
+              )}
+
+              <div style={{ display: 'grid', gap: 8 }}>
+                {visibleSomedayItems.slice(0, 12).map((item) => (
+                  <div key={item.id} style={{ border: '1px solid #3a3a3a', borderRadius: 8, padding: 8, background: '#181818' }}>
+                    <div style={{ fontWeight: 600, marginBottom: 4 }}>{item.title}</div>
+                    <div style={{ fontSize: 12, opacity: 0.82 }}>
+                      Impact {item.impact || 'M'} · Effort {item.effort || 'M'}
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                      <button style={polishedButtonStyle} disabled={somedayBusyId === item.id} onClick={() => void promoteSomeday(item, true)}>In Backlog</button>
+                      <button style={polishedButtonStyle} disabled={somedayBusyId === item.id} onClick={() => void deleteSomeday(item)}>Löschen</button>
+                    </div>
                   </div>
-                </div>
+                ))}
+                {visibleSomedayItems.length === 0 && (
+                  <div style={{ fontSize: 12, opacity: 0.6 }}>Keine Someday-Einträge.</div>
+                )}
+              </div>
+            </div>
+                </>
               )
             })()}
           </>
