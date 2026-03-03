@@ -14,6 +14,22 @@ class ReviewHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
+    def do_GET(self):
+        if self.path == '/api/health':
+            try:
+                load_dotenv(ROOT / '.env')
+                db_url = os.environ.get('DATABASE_URL')
+                if not db_url:
+                    raise RuntimeError('DATABASE_URL missing')
+                with psycopg.connect(db_url) as conn, conn.cursor() as cur:
+                    cur.execute('select 1')
+                    cur.fetchone()
+                self._json({'ok': True, 'db': 'up'})
+            except Exception as e:
+                self._json({'ok': False, 'db': 'down', 'error': str(e)}, code=500)
+            return
+        return super().do_GET()
+
     def do_POST(self):
         if self.path != '/api/review-decision':
             self.send_error(404, 'Not found')

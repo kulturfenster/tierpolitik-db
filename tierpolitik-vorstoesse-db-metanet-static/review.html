@@ -24,7 +24,8 @@
   <p>
     <button id="exportBtn">Entscheidungen exportieren</button>
     <button id="toggleDoneBtn">Bearbeitete anzeigen</button>
-    <a href="/review.html">altes /review</a>
+    <a href="/">Home</a>
+    <span id="health" style="margin-left:10px;color:#93c5fd">Neon: prüfe…</span>
   </p>
   <table>
     <thead>
@@ -122,6 +123,11 @@ document.addEventListener('keydown', async (e)=>{
 });
 
 updateToggleBtn();
+fetch('/api/health',{cache:'no-store'})
+  .then(r=>r.json())
+  .then(h=>{document.getElementById('health').textContent = h.ok ? 'Neon: verbunden ✅' : 'Neon: Fehler ❌';})
+  .catch(()=>{document.getElementById('health').textContent='Neon: nicht erreichbar ❌';});
+
 fetch('/data/review-inbox.json',{cache:'no-store'})
   .then(r=>r.json())
   .then(data=>{state.items=Array.isArray(data)?data:[]; state.selected=0; render();})
