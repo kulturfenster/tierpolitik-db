@@ -9,6 +9,40 @@ from dotenv import load_dotenv
 OUT_JSON = Path('data/review-inbox.json')
 
 
+def make_summary(title: str | None, body: str | None, item_type: str | None, status: str | None) -> str:
+    t = (title or '').strip()
+    b = (body or '').strip()
+
+    # Remove technical key:value lines from connector payloads
+    lines = []
+    for ln in b.splitlines():
+        ln = ln.strip()
+        if not ln:
+            continue
+        if ':' in ln and len(ln.split(':', 1)[0]) < 30:
+            # skip machine-style metadata rows (e.g. Geschaeftsstatus: ...)
+            continue
+        lines.append(ln)
+
+    text = ' '.join(lines).strip()
+    if not text:
+        text = t
+
+    text = text.replace('  ', ' ').strip()
+    if len(text) > 220:
+        text = text[:217].rstrip() + '...'
+
+    prefix = []
+    if item_type:
+        prefix.append(item_type.strip())
+    if status:
+        prefix.append(status.strip())
+
+    if prefix:
+        return f"{' · '.join(prefix)} — {text}" if text else ' · '.join(prefix)
+    return text
+
+
 def main():
     load_dotenv('.env')
     db_url = os.environ.get('DATABASE_URL')
@@ -57,7 +91,7 @@ def main():
                 "source_key": r[1],
                 "external_id": r[2],
                 "title": r[3],
-                "summary": r[4],
+                "summary": make_summary(r[3], r[4], r[5], r[6]),
                 "type": r[5],
                 "status": r[6],
                 "submitted_at": r[7].isoformat() if r[7] else None,
