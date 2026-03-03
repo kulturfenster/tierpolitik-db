@@ -3,7 +3,7 @@ import path from 'node:path'
 
 export type TaskStatus = 'open' | 'doing' | 'waiting' | 'done'
 export type TaskPriority = 'low' | 'med' | 'high'
-export type Assignee = 'Tobi' | 'ALF' | 'Beide'
+export type Assignee = 'Tobi' | 'ALF' | 'Beide' | 'main' | 'tif-coding' | 'tif-health' | 'tif-medien' | 'tif-politik' | 'tif-text' | 'tif-website'
 export type Impact = 'low' | 'med' | 'high'
 export type Area = 'medien' | 'politik' | 'buch' | 'ops'
 export type TocAxis = 'wertschoepfung' | 'weltbild' | 'repraesentation'
@@ -133,7 +133,7 @@ export function listTasks() {
   return loadDb().tasks.sort(compareByUpdatedAtThenTitle)
 }
 
-export function addTask(input: Pick<Task, 'title' | 'priority' | 'assignee'> & Partial<Pick<Task, 'impact' | 'area' | 'deadline' | 'tocAxis'>>) {
+export function addTask(input: Pick<Task, 'title' | 'priority' | 'assignee'> & Partial<Pick<Task, 'status' | 'impact' | 'area' | 'deadline' | 'tocAxis'>>) {
   const now = new Date().toISOString()
   const task: Task = {
     id: `task_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
@@ -144,7 +144,7 @@ export function addTask(input: Pick<Task, 'title' | 'priority' | 'assignee'> & P
     area: input.area,
     deadline: input.deadline,
     tocAxis: input.tocAxis,
-    status: 'open',
+    status: input.status ?? 'open',
     createdAt: now,
     updatedAt: now,
   }

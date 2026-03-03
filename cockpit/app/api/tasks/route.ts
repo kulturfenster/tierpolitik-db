@@ -101,8 +101,11 @@ export async function POST(req: NextRequest) {
   }
 
   const normalizedTitle = normalizeTitle(title)
+  const status = ['open', 'doing', 'waiting', 'done'].includes(body?.status) ? body.status : 'open'
   const priority = ['low', 'med', 'high'].includes(body.priority) ? body.priority : 'med'
-  const assignee = ['Tobi', 'ALF', 'Beide'].includes(body.assignee) ? body.assignee : 'Beide'
+  const assignee = ['Tobi', 'ALF', 'Beide', 'main', 'tif-coding', 'tif-health', 'tif-medien', 'tif-politik', 'tif-text', 'tif-website'].includes(body?.assignee)
+    ? body.assignee
+    : 'tif-website'
   const impact = ['low', 'med', 'high'].includes(body.impact) ? body.impact : 'med'
   const area = ['medien', 'politik', 'buch', 'ops'].includes(body.area) ? body.area : 'ops'
   const tocAxis = ['wertschoepfung', 'weltbild', 'repraesentation'].includes(body.tocAxis) ? body.tocAxis : undefined
@@ -116,7 +119,7 @@ export async function POST(req: NextRequest) {
   const latestDone = sameTitleTasks.find((task) => task.status === 'done')
   if (latestDone) {
     const reopened = patchTask(latestDone.id, {
-      status: 'open',
+      status,
       priority,
       assignee,
       impact,
@@ -129,6 +132,7 @@ export async function POST(req: NextRequest) {
 
   const task = addTask({
     title,
+    status,
     priority,
     assignee,
     impact,
