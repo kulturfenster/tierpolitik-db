@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tierpolitik Monitor – Review Inbox (DB)</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:16px}
+    .wrap{max-width:1200px;margin:0 auto}
+    a{color:#93c5fd}
+    table{width:100%;border-collapse:collapse;background:#111827;margin-top:12px}
+    th,td{border:1px solid #334155;padding:8px;vertical-align:top}
+    th{background:#1f2937}
+    button{margin-right:6px}
+    .yes{color:#86efac}.unsure{color:#fde68a}.no{color:#fca5a5}
+    .row-done{opacity:.45}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Review Inbox (DB)</h1>
+  <p>Quelle: <code>/data/review-inbox.json</code> · Entscheidungen bleiben lokal im Browser bis Export.</p>
+  <p>
+    <button id="exportBtn">Entscheidungen exportieren</button>
+    <button id="toggleDoneBtn">Bearbeitete ausblenden</button>
+    <a href="/review.html">altes /review</a>
+  </p>
+  <table>
+    <thead>
+      <tr><th>Titel</th><th>Quelle</th><th>Label</th><th>Status</th><th>Aktion</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<script>
+const state={items:[],decisions:{},showDone:true};
+const rows=document.getElementById('rows');
+const key='tpm.review.decisions.v1';
+state.decisions=JSON.parse(localStorage.getItem(key)||'{}');
+
+function save(){localStorage.setItem(key,JSON.stringify(state.decisions));}
+function decision(id){return state.decisions[id]||'queued'}
+function render(){
+  rows.innerHTML='';
+  for(const it of state.items){
+    const d=decision(it.id);
+    if(!state.showDone && d!=='queued') continue;
+    const tr=document.createElement('tr');
+    if(d!=='queued') tr.className='row-done';
+    tr.innerHTML=`
+      <td><strong>${it.title||'(ohne Titel)'}</strong><br><small>${it.summary||''}</small><br><a target="_blank" href="${it.url||'#'}">Original</a></td>
+      <td>${it.source_key}<br><small>${it.external_id}</small></td>
+      <td class="${it.label}">${it.label}${it.confidence?` (${it.confidence.toFixed(2)})`:''}<br><small>${it.reason||''}</small></td>
+      <td>${d}</td>
+      <td>
+        <button data-id="${it.id}" data-v="approved">Approve</button>
+        <button data-id="${it.id}" data-v="rejected">Reject</button>
+        <button data-id="${it.id}" data-v="queued">Reset</button>
+      </td>`;
+    rows.appendChild(tr);
+  }
+  rows.querySelectorAll('button[data-id]').forEach(b=>b.onclick=()=>{state.decisions[b.dataset.id]=b.dataset.v;save();render();});
+}
+
+document.getElementById('toggleDoneBtn').onclick=()=>{state.showDone=!state.showDone;render();};
+document.getElementById('exportBtn').onclick=()=>{
+  const payload=Object.entries(state.decisions).map(([id,decision])=>({id,decision,ts:new Date().toISOString()}));
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='review-decisions-db.json';a.click();URL.revokeObjectURL(a.href);
+};
+
+fetch('/data/review-inbox.json',{cache:'no-store'}).then(r=>r.json()).then(data=>{state.items=Array.isArray(data)?data:[];render();}).catch(()=>{state.items=[];render();});
+</script>
+</body>
+</html>
