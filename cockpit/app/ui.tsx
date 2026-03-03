@@ -5083,13 +5083,13 @@ export default function ClientBoard() {
                 {cronError}
               </div>
             )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0,1fr))', gap: 8, marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0,1fr))', gap: 10, marginBottom: 16 }}>
               {weeklyJobColumns.map((day, dayIdx) => (
-                <div key={day.label} style={{ background: '#1f1f1f', border: '1px solid #343434', borderRadius: 10, padding: 8, minHeight: 170 }}>
-                  <div style={{ fontSize: 12, opacity: 0.75 }}>{day.dateLabel}</div>
-                  <div style={{ fontWeight: 700, marginBottom: 8 }}>{day.label}</div>
+                <div key={day.label} style={{ background: `linear-gradient(180deg, rgba(37,99,235,0.14) 0%, rgba(31,41,55,0.92) 70%)`, border: '1px solid #35507a', borderRadius: 12, padding: 10, minHeight: 190, boxShadow: '0 6px 18px rgba(0,0,0,0.22)' }}>
+                  <div style={{ fontSize: 12, color: '#bfdbfe', letterSpacing: 0.2 }}>{day.dateLabel}</div>
+                  <div style={{ fontWeight: 800, marginBottom: 10, color: '#eff6ff', fontSize: 14 }}>{day.label}</div>
                   {day.jobs.length === 0 ? (
-                    <div style={{ fontSize: 12, opacity: 0.55 }}>–</div>
+                    <div style={{ fontSize: 12, color: '#93c5fd' }}>Keine Jobs</div>
                   ) : (
                     <div style={{ display: 'grid', gap: 6 }}>
                       {day.jobs.map((job, jobIdx) => {
@@ -5106,10 +5106,10 @@ export default function ClientBoard() {
                               setSelectedCronJob({ job: baseJob, runAtMs: job.nextRunAtMs ?? null })
                             }}
                             title="Cron-Details öffnen"
-                            style={{ border: '1px solid #3a3a3a', borderLeft: `4px solid ${sourceColor}`, background: '#181818', borderRadius: 8, padding: 6, textAlign: 'left', color: '#f5f5f5', cursor: 'pointer' }}
+                            style={{ border: '1px solid #4b6b98', borderLeft: `5px solid ${sourceColor}`, background: 'linear-gradient(180deg, #1b2533 0%, #141c27 100%)', borderRadius: 10, padding: 8, textAlign: 'left', color: '#f8fafc', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.25)' }}
                           >
-                            <div style={{ fontSize: 12, fontWeight: 600, lineHeight: 1.3 }}>{simplifyCronJobName(job.name)}</div>
-                            <div style={{ fontSize: 11, opacity: 0.78 }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.35, color: '#e2e8f0' }}>{simplifyCronJobName(job.name)}</div>
+                            <div style={{ fontSize: 11, color: '#93c5fd' }}>
                               {job.nextRunAtMs ? new Date(job.nextRunAtMs).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }) : 'ohne Zeit'} · {job.cronType || 'General'}
                             </div>
                           </button>
@@ -5128,7 +5128,7 @@ export default function ClientBoard() {
               >
                 <div
                   onClick={(event) => event.stopPropagation()}
-                  style={{ width: 'min(760px, 100%)', maxHeight: '85vh', overflowY: 'auto', background: '#141414', border: '1px solid #303030', borderRadius: 12, padding: 14 }}
+                  style={{ width: 'min(860px, 100%)', maxHeight: '88vh', overflowY: 'auto', background: 'linear-gradient(180deg, #0f172a 0%, #111827 100%)', border: '1px solid #334155', borderRadius: 14, padding: 16, boxShadow: '0 20px 50px rgba(0,0,0,0.45)' }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 12 }}>
                     <div>
@@ -5183,7 +5183,7 @@ export default function ClientBoard() {
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 8, marginTop: 12 }}>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}>
                       <strong>Status:</strong>{' '}
                       <span
                         style={{
@@ -5200,12 +5200,12 @@ export default function ClientBoard() {
                         {cronStatusTone(selectedCronJob.job.status).label}
                       </span>
                     </div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Typ:</strong> {selectedCronJob.job.cronType || 'General'}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Quelle:</strong> {selectedCronJob.job.source === 'launchd' ? 'System-Job (launchd)' : (selectedCronJob.job.source || 'openclaw')}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Agent:</strong> {selectedCronJob.job.agentId || (selectedCronJob.job.source === 'launchd' ? 'System-Task' : '–')}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>LLM-Modell:</strong> {selectedCronJob.job.agentId ? (modelByAgentId.get(selectedCronJob.job.agentId) || selectedCronJob.job.lastRunModel || 'unbekannt') : (selectedCronJob.job.lastRunModel || '–')}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Nächster Run:</strong> {formatCronDateTime(selectedCronJob.job.nextRunAtMs)}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Typ:</strong> {selectedCronJob.job.cronType || 'General'}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Quelle:</strong> {selectedCronJob.job.source === 'launchd' ? 'System-Job (launchd)' : (selectedCronJob.job.source || 'openclaw')}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Agent:</strong> {selectedCronJob.job.agentId || (selectedCronJob.job.source === 'launchd' ? 'System-Task' : '–')}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>LLM-Modell:</strong> {selectedCronJob.job.agentId ? (modelByAgentId.get(selectedCronJob.job.agentId) || selectedCronJob.job.lastRunModel || 'unbekannt') : (selectedCronJob.job.lastRunModel || '–')}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Nächster Run:</strong> {formatCronDateTime(selectedCronJob.job.nextRunAtMs)}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}>
                       <strong>Letzter Run:</strong>{' '}
                       {selectedCronJob.job.source === 'launchd' && !selectedCronJob.job.lastRunAtMs ? (
                         'nicht im Cockpit-Feed verfügbar'
@@ -5224,12 +5224,12 @@ export default function ClientBoard() {
                         formatCronDayMonth(selectedCronJob.job.lastRunAtMs)
                       )}
                     </div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Letzte Dauer:</strong> {formatCronDuration(selectedCronJob.job.lastDurationMs)}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Intervall:</strong> {selectedCronJob.job.scheduleLabel}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Delivery:</strong> {selectedCronJob.job.deliveryMode || '–'} {selectedCronJob.job.deliveryChannel ? `· ${selectedCronJob.job.deliveryChannel}` : ''}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Discord-Channel:</strong> {selectedCronJob.job.deliveryTargetLabel || selectedCronJob.job.deliveryTo || '–'}</div>
-                    <div style={{ background: '#1b1b1b', border: '1px solid #2f2f2f', borderRadius: 8, padding: 8 }}><strong>Consecutive Errors:</strong> {typeof selectedCronJob.job.consecutiveErrors === 'number' ? selectedCronJob.job.consecutiveErrors : 0}</div>
-                    <div style={{ gridColumn: '1 / -1', background: 'linear-gradient(180deg, #16202d 0%, #121a24 100%)', border: '1px solid #2c3e50', borderRadius: 10, padding: 12 }}>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Letzte Dauer:</strong> {formatCronDuration(selectedCronJob.job.lastDurationMs)}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Intervall:</strong> {selectedCronJob.job.scheduleLabel}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Delivery:</strong> {selectedCronJob.job.deliveryMode || '–'} {selectedCronJob.job.deliveryChannel ? `· ${selectedCronJob.job.deliveryChannel}` : ''}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Discord-Channel:</strong> {selectedCronJob.job.deliveryTargetLabel || selectedCronJob.job.deliveryTo || '–'}</div>
+                    <div style={{ background: '#162132', border: '1px solid #2f4564', borderRadius: 8, padding: 8 }}><strong>Consecutive Errors:</strong> {typeof selectedCronJob.job.consecutiveErrors === 'number' ? selectedCronJob.job.consecutiveErrors : 0}</div>
+                    <div style={{ gridColumn: '1 / -1', background: 'linear-gradient(180deg, #1d2b40 0%, #162235 100%)', border: '1px solid #36557a', borderRadius: 10, padding: 12 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                         <strong style={{ color: '#dbeafe' }}>Was macht der Job konkret?</strong>
                         <button
