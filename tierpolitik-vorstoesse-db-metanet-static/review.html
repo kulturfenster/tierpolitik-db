@@ -1,0 +1,2148 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Crawler Review</title>
+<style>
+  body{font-family:Inter,Arial,sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:24px}
+  .wrap{max-width:1280px;margin:0 auto}
+  h1{margin:0 0 8px}
+  p{color:#a9bfd8}
+  code{background:#1f2937;border:1px solid #334155;color:#dbeafe;padding:1px 5px;border-radius:6px}
+  .links{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .links a{display:inline-block;border:1px solid rgba(255,255,255,.18);padding:6px 10px;border-radius:999px;text-decoration:none;color:#dbeafe}
+  .status{margin:10px 0 14px;color:#bfdbfe}
+  button{margin-right:6px;border:1px solid #4b5563;border-radius:8px;padding:5px 9px;background:#22364f;color:#e8effa;cursor:pointer}
+  button:hover{background:#2b4565}
+  .export{margin:10px 0 12px}
+  table{width:100%;border-collapse:collapse;background:#111827;border:1px solid #334155;border-radius:12px;overflow:hidden}
+  td,th{border-bottom:1px solid #1f2937;padding:10px;vertical-align:top;text-align:left}
+  th{background:#1b2433;color:#dbeafe;font-weight:700;position:sticky;top:0}
+  tr:hover td{background:#172133}
+  .orig-link{display:inline-block;margin-top:6px;color:#93c5fd}
+  .muted{color:#94a3b8}
+  .pending{color:#f59e0b}
+  .historic{color:#94a3b8}
+  .fast-lane{color:#fbbf24;font-weight:700}
+  .row-fastlane td{background:rgba(251,191,36,.08)}
+  .fastlane-wrap{margin:12px 0 16px;padding:12px;border:1px solid #475569;border-radius:10px;background:#111827}
+  .fastlane-wrap h2{font-size:16px;margin:0 0 10px;color:#fde68a}
+  .fastlane-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+  .fastlane-card{border:1px solid #334155;border-radius:10px;padding:10px;background:#0b1220}
+  .fastlane-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .fastlane-score{font-weight:700;color:#fde68a}
+  .fastlane-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  @media (max-width: 760px){
+    body{padding:12px}
+    td,th{padding:8px;font-size:13px}
+    .fastlane-wrap{position:sticky;top:0;z-index:5}
+  }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Review-Ansicht</h1>
+    <p>Es werden standardmässig nur <strong>offene</strong> relevante Einträge gezeigt (queued/new). Bereits bearbeitete Einträge bleiben ausgeblendet und können bei Bedarf über den Button eingeblendet werden. Wenn ein Vorstoss in mehreren Sprachen vorliegt, wird bevorzugt die <strong>deutsche Version</strong> angezeigt. Approve/Reject blendet den Eintrag sofort aus; mit <strong>Entscheidungen exportieren</strong> + <code>npm run crawler:apply-review</code> wird es in JSON/DB übernommen.</p>
+    <p class="status" id="status-summary">Status-Summen (sichtbar): queued=0, approved=0, published=0</p>
+    <nav class="links"><a href="/">Zur App</a><a href="/user-input.html">User-Input</a></nav>
+    <p class="export"><button onclick="exportDecisions()">Entscheidungen exportieren</button> <button onclick="toggleDecided()" id="toggle-decided">Bereits bearbeitete anzeigen</button></p>
+    <p id="decision-status" class="muted" aria-live="polite"></p>
+    <section class="fastlane-wrap">
+      <h2>⚡ Fast-Lane</h2>
+      <div class="fastlane-grid"><div class="fastlane-card" data-id="ch-cantonal-portal-core:cantonal-portal-sz" data-fastlane-tagged="0">
+    <div class="fastlane-head">
+      <strong>SZ · Kantonsrat Schwyz: Jagd und Wildtiere</strong>
+      <span class="fastlane-score">1.00</span>
+    </div>
+    <div class="fastlane-actions">
+      <button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-sz','approved')">Approve</button>
+      <button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-sz','rejected')">Reject</button>
+      <button class="tag-btn" data-tag-btn="ch-cantonal-portal-core:cantonal-portal-sz" onclick="toggleFastlaneTag(this,'ch-cantonal-portal-core:cantonal-portal-sz')">☆ Fastlane</button>
+      <a class="orig-link" href="https://www.sz.ch/behoerden/kantonsrat.html/8756-8758-8799" target="_blank" rel="noopener noreferrer">Original</a>
+    </div>
+  </div><div class="fastlane-card" data-id="ch-cantonal-portal-core:cantonal-portal-zg" data-fastlane-tagged="0">
+    <div class="fastlane-head">
+      <strong>ZG · Kantonsrat Zug: Arten, Lebensräume, Jagd Artenschutz, Lebensraumförderung, Naturschutzgebiete, Jagd, Hilfe für Wildtiere</strong>
+      <span class="fastlane-score">1.00</span>
+    </div>
+    <div class="fastlane-actions">
+      <button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-zg','approved')">Approve</button>
+      <button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-zg','rejected')">Reject</button>
+      <button class="tag-btn" data-tag-btn="ch-cantonal-portal-core:cantonal-portal-zg" onclick="toggleFastlaneTag(this,'ch-cantonal-portal-core:cantonal-portal-zg')">☆ Fastlane</button>
+      <a class="orig-link" href="https://zg.ch/de/staat-politik/geschaefte-des-kantonsrats" target="_blank" rel="noopener noreferrer">Original</a>
+    </div>
+  </div><div class="fastlane-card" data-id="ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91" data-fastlane-tagged="1">
+    <div class="fastlane-head">
+      <strong>Bern · Biodiversität im Siedlungsgebiet fördern</strong>
+      <span class="fastlane-score">1.00</span>
+    </div>
+    <div class="fastlane-actions">
+      <button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91','approved')">Approve</button>
+      <button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91','rejected')">Reject</button>
+      <button class="tag-btn" data-tag-btn="ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91" onclick="toggleFastlaneTag(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91')">⭐ Fastlane</button>
+      <a class="orig-link" href="https://stadtrat.bern.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php" target="_blank" rel="noopener noreferrer">Original</a>
+    </div>
+  </div><div class="fastlane-card" data-id="ch-parliament-business-de:20250067-de" data-fastlane-tagged="0">
+    <div class="fastlane-head">
+      <strong>25.067 · «Für eine sichere Ernährung – durch Stärkung einer nachhaltigen inländischen Produktion, mehr pflanzliche Lebensmittel und sauberes Trinkwasser (Ernährungsinitiative)». Volksinitiative</strong>
+      <span class="fastlane-score">1.00</span>
+    </div>
+    <div class="fastlane-actions">
+      <button onclick="setDecision(this,'ch-parliament-business-de:20250067-de','approved')">Approve</button>
+      <button onclick="setDecision(this,'ch-parliament-business-de:20250067-de','rejected')">Reject</button>
+      <button class="tag-btn" data-tag-btn="ch-parliament-business-de:20250067-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20250067-de')">☆ Fastlane</button>
+      <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20250067" target="_blank" rel="noopener noreferrer">Original</a>
+    </div>
+  </div></div>
+    </section>
+    <table>
+      <thead>
+        <tr>
+          <th>Titel</th>
+          <th>Typ</th>
+          <th>Quelle</th>
+          <th>Score</th>
+          <th>Treffer</th>
+          <th>Status</th>
+          <th>Warum relevant / nicht</th>
+          <th>Aktion</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-id="ch-cantonal-portal-core:cantonal-portal-sz" data-status="queued" data-fastlane-tagged="0" class="row-fastlane">
+<td>
+  <strong>SZ · Kantonsrat Schwyz: Jagd und Wildtiere</strong><br>
+  <small>Kantonsrat – Kanton Schwyz – 3 relevante Linkziele erkannt (1 thematisch, 2 Seiten gescannt, Leitlink: Jagd und Wildtiere)</small><br>
+  <a class="orig-link" href="https://www.sz.ch/behoerden/kantonsrat.html/8756-8758-8799" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Cantonal portals (core crawl)</div>
+  <small class="muted">ch-cantonal-portal-core</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: fast-lane</small><br><small class="fast-lane">⚡ Sehr wahrscheinlich relevant</small></td>
+<td>wildtier, wildtiere, jagd</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> wildtier, wildtiere, jagd</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-sz','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-sz','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-cantonal-portal-core:cantonal-portal-sz" onclick="toggleFastlaneTag(this,'ch-cantonal-portal-core:cantonal-portal-sz')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-cantonal-portal-core:cantonal-portal-zg" data-status="queued" data-fastlane-tagged="0" class="row-fastlane">
+<td>
+  <strong>ZG · Kantonsrat Zug: Arten, Lebensräume, Jagd Artenschutz, Lebensraumförderung, Naturschutzgebiete, Jagd, Hilfe für Wildtiere</strong><br>
+  <small>Geschäfte des Kantonsrats – 7 relevante Linkziele erkannt (2 thematisch, 3 Seiten gescannt, Leitlink: Arten, Lebensräume, Jagd Artenschutz, Lebensraumförderung, Naturschutzgebiete, Jagd, Hilfe für Wildtiere)</small><br>
+  <a class="orig-link" href="https://zg.ch/de/staat-politik/geschaefte-des-kantonsrats" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Cantonal portals (core crawl)</div>
+  <small class="muted">ch-cantonal-portal-core</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: fast-lane</small><br><small class="fast-lane">⚡ Sehr wahrscheinlich relevant</small></td>
+<td>tiere, wildtier, wildtiere, biodiversität, biodiversita, jagd</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tiere, wildtier, wildtiere</div><div><strong>Kontext:</strong> jagd, biodiversität</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-zg','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-zg','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-cantonal-portal-core:cantonal-portal-zg" onclick="toggleFastlaneTag(this,'ch-cantonal-portal-core:cantonal-portal-zg')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91" data-status="queued" data-fastlane-tagged="1" class="row-fastlane">
+<td>
+  <strong>Bern · Biodiversität im Siedlungsgebiet fördern</strong><br>
+  <small>Gemeinde Bern (Stadtrat Bern) · 2026.SR.0055 · Eingereicht</small><br>
+  <a class="orig-link" href="https://stadtrat.bern.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Municipal parliaments (Bern, Zürich)</div>
+  <small class="muted">ch-municipal-parliament-bern-zurich</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: fast-lane</small><br><small class="fast-lane">⚡ Sehr wahrscheinlich relevant</small><br><small class="fast-lane">⭐ von dir als Fastlane markiert</small></td>
+<td>biodiversität, biodiversita, motion</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> biodiversität, biodiversita</div><div><strong>Kontext:</strong> motion</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91" onclick="toggleFastlaneTag(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91')">⭐ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20250067-de" data-status="queued" data-fastlane-tagged="0" class="row-fastlane">
+<td>
+  <strong>25.067 · «Für eine sichere Ernährung – durch Stärkung einer nachhaltigen inländischen Produktion, mehr pflanzliche Lebensmittel und sauberes Trinkwasser (Ernährungsinitiative)». Volksinitiative</strong><br>
+  <small>Botschaft vom 13. August 2025 zur Volksinitiative «Für eine sichere Ernährung – durch Stärkung einer nachhaltigen inländischen Produktion, mehr pflanzliche Lebensmittel und sauberes Trinkwasser (Ernährungsinitiative)»</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20250067" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: fast-lane</small><br><small class="fast-lane">⚡ Sehr wahrscheinlich relevant</small></td>
+<td>ernährung, alimentazione, initiative, botschaft, landwirtschaft, agriculture, agricoltura</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> ernährung, alimentazione</div><div><strong>Kontext:</strong> initiative, botschaft, landwirtschaft</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250067-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250067-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20250067-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20250067-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20210044-de" data-status="queued" data-fastlane-tagged="0" class="row-fastlane">
+<td>
+  <strong>21.044 · Keine Massentierhaltung in der Schweiz (Massentierhaltungsinitiative). Volksinitiative und direkter Gegenentwurf</strong><br>
+  <small>Botschaft vom 19. Mai 2021 zur Volksinitiative «Keine Massentierhaltung in der Schweiz (Massentierhaltungsinitiative)» und zum direkten Gegenentwurf (Bundesbeschluss über den Schutz und das Wohlergehen der Tiere)</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20210044" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: fast-lane</small><br><small class="fast-lane">⚡ Sehr wahrscheinlich relevant</small></td>
+<td>tiere, massentierhaltung, massentier, botschaft, landwirtschaft</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tiere, massentierhaltung, massentier</div><div><strong>Kontext:</strong> botschaft, landwirtschaft</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20210044-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20210044-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20210044-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20210044-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-municipal-parliament-bern-zurich:municipal-bern-api-c6c65c8ce8a84435af97428996dadc64" data-status="queued" data-fastlane-tagged="1" class="">
+<td>
+  <strong>Bern · Biodiversität im Wald fördern</strong><br>
+  <small>Gemeinde Bern (Stadtrat Bern) · 2026.SR.0056 · Eingereicht</small><br>
+  <a class="orig-link" href="https://stadtrat.bern.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Municipal parliaments (Bern, Zürich)</div>
+  <small class="muted">ch-municipal-parliament-bern-zurich</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: hoch</small><br><small class="fast-lane">⭐ von dir als Fastlane markiert</small></td>
+<td>biodiversität, biodiversita, motion</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Thematisch relevant und von priorisiertem Parlamentsprofil</div><div><strong>Tier-Begriffe:</strong> biodiversität, biodiversita</div><div><strong>Kontext:</strong> motion</div><div><strong>Priorisierte Profile:</strong> tobias sennhauser</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-c6c65c8ce8a84435af97428996dadc64','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-c6c65c8ce8a84435af97428996dadc64','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-municipal-parliament-bern-zurich:municipal-bern-api-c6c65c8ce8a84435af97428996dadc64" onclick="toggleFastlaneTag(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-c6c65c8ce8a84435af97428996dadc64')">⭐ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-municipal-parliament-bern-zurich:municipal-bern-api-58a0ae87cf6f44e1a4030952a06a85bb" data-status="queued" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Bern · Biodiversität im Landwirtschaftsgebiet fördern</strong><br>
+  <small>Gemeinde Bern (Stadtrat Bern) · 2026.SR.0054 · Eingereicht</small><br>
+  <a class="orig-link" href="https://stadtrat.bern.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Municipal parliaments (Bern, Zürich)</div>
+  <small class="muted">ch-municipal-parliament-bern-zurich</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: hoch</small></td>
+<td>biodiversität, biodiversita, motion, landwirtschaft</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Thematisch relevant und von priorisiertem Parlamentsprofil</div><div><strong>Tier-Begriffe:</strong> biodiversität, biodiversita</div><div><strong>Kontext:</strong> motion, landwirtschaft</div><div><strong>Priorisierte Profile:</strong> tobias sennhauser</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-58a0ae87cf6f44e1a4030952a06a85bb','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-58a0ae87cf6f44e1a4030952a06a85bb','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-municipal-parliament-bern-zurich:municipal-bern-api-58a0ae87cf6f44e1a4030952a06a85bb" onclick="toggleFastlaneTag(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-58a0ae87cf6f44e1a4030952a06a85bb')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-cantonal-portal-core:cantonal-portal-nw" data-status="queued" data-fastlane-tagged="0" class="">
+<td>
+  <strong>NW · Landrat Nidwalden: Tierschutz in der Landwirtschaft</strong><br>
+  <small>Landrat | Kanton Nidwalden Online – 3 relevante Linkziele erkannt (1 thematisch, 3 Seiten gescannt, Leitlink: Tierschutz in der Landwirtschaft)</small><br>
+  <a class="orig-link" href="https://www.nw.ch/landratmain" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Cantonal portals (core crawl)</div>
+  <small class="muted">ch-cantonal-portal-core</small>
+</td>
+<td>0.61<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.61</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-nw','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-nw','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-cantonal-portal-core:cantonal-portal-nw" onclick="toggleFastlaneTag(this,'ch-cantonal-portal-core:cantonal-portal-nw')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-municipal-parliament-bern-zurich:municipal-bern-api-13284d70bb124c23a1bbba427e8a7c5c" data-status="queued" data-fastlane-tagged="1" class="">
+<td>
+  <strong>Bern · Tierpark Bern: Welche Alternativen zur Tötung überzähliger Tiere gibt es?</strong><br>
+  <small>Gemeinde Bern (Stadtrat Bern) · 2026.SR.0019 · Eingereicht</small><br>
+  <a class="orig-link" href="https://stadtrat.bern.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Municipal parliaments (Bern, Zürich)</div>
+  <small class="muted">ch-municipal-parliament-bern-zurich</small>
+</td>
+<td>0.55<br><small class="muted">Priorität: mittel</small><br><small class="fast-lane">⭐ von dir als Fastlane markiert</small></td>
+<td>tiere</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Thematisch relevant und von priorisiertem Parlamentsprofil</div><div><strong>Tier-Begriffe:</strong> tiere</div><div><strong>Priorisierte Profile:</strong> tobias sennhauser</div><div><strong>Score:</strong> 0.55</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-13284d70bb124c23a1bbba427e8a7c5c','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-13284d70bb124c23a1bbba427e8a7c5c','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-municipal-parliament-bern-zurich:municipal-bern-api-13284d70bb124c23a1bbba427e8a7c5c" onclick="toggleFastlaneTag(this,'ch-municipal-parliament-bern-zurich:municipal-bern-api-13284d70bb124c23a1bbba427e8a7c5c')">⭐ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-cantonal-portal-core:cantonal-portal-ur" data-status="queued" data-fastlane-tagged="0" class="">
+<td>
+  <strong>UR · Landrat Uri: Geschäfte Landrat Uri</strong><br>
+  <small>Kanton Uri - Sessionen – 4 relevante Linkziele erkannt (1 thematisch, 3 Seiten gescannt, Leitlink: Geschäfte Landrat Uri)</small><br>
+  <a class="orig-link" href="https://www.ur.ch/sitzung" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Cantonal portals (core crawl)</div>
+  <small class="muted">ch-cantonal-portal-core</small>
+</td>
+<td>0.45<br><small class="muted">Priorität: niedriger</small></td>
+<td>jagd</td>
+<td>queued (<strong class="pending">offen</strong>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> jagd</div><div><strong>Score:</strong> 0.45</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-ur','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-cantonal-portal-core:cantonal-portal-ur','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-cantonal-portal-core:cantonal-portal-ur" onclick="toggleFastlaneTag(this,'ch-cantonal-portal-core:cantonal-portal-ur')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20214435" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20214435</strong><br>
+  <small>Parlamentsgeschäft 20214435</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20214435" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, wildschwein, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine, wildschwein</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20214435','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20214435','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20214435" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20214435')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223299" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223299</strong><br>
+  <small>Parlamentsgeschäft 20223299</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223299" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, schweinezucht, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine, schweinezucht</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223299','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223299','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223299" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223299')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223633" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223633</strong><br>
+  <small>Parlamentsgeschäft 20223633</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223633" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, schlacht, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> schlacht, landwirtschaft</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223633','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223633','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223633" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223633')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254697-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>25.4697 · Zusammenarbeit Bund und Kantone im Bereich Subventionen mit biodiversitätsschädigender Wirkung</strong><br>
+  <small>Kurzfassung: Das Geschäft behandelt biodiversität, biodiversite, biodiversita. Einordnung: Es hat einen indirekten bzw. unklaren Tierbezug.</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254697" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>1.00<br><small class="muted">Priorität: hoch</small></td>
+<td>biodiversität, biodiversite, biodiversita</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> biodiversität, biodiversite, biodiversita</div><div><strong>Störsignale:</strong> finanz</div><div><strong>Score:</strong> 1.00</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254697-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254697-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254697-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254697-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20210426-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>21.426 · Mehr Ressourcen und Anreize für die 3R-Forschung, um Alternativen zu den Tierversuchen rascher voranzutreiben</strong><br>
+  <small>In Kommission des Nationalrats</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20210426" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.98<br><small class="muted">Priorität: hoch</small></td>
+<td>tierversuch, tierversuche, animal, expérimentation animale, sperimentazione animale, 3r, animale</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche, animal</div><div><strong>Kontext:</strong> animale</div><div><strong>Störsignale:</strong> finanz</div><div><strong>Score:</strong> 0.98</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20210426-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20210426-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20210426-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20210426-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20240089-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>24.089 · «Ja zum Importverbot für Stopfleber (Stopfleber-Initiative)». Volksinitiative</strong><br>
+  <small>Botschaft vom 20. November 2024 zur Volksinitiative «Ja zum Importverbot für Stopfleber (Stopfleber-Initiative)»</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20240089" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.96<br><small class="muted">Priorität: hoch</small></td>
+<td>stopfleber, foie gras, initiative, botschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> stopfleber, foie gras</div><div><strong>Kontext:</strong> initiative, botschaft</div><div><strong>Score:</strong> 0.96</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20240089-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20240089-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20240089-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20240089-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20203648" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20203648</strong><br>
+  <small>Parlamentsgeschäft 20203648</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20203648" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203648','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203648','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20203648" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20203648')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20250078" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20250078</strong><br>
+  <small>Parlamentsgeschäft 20250078</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20250078" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>tierversuch, tierversuchsfreie, botschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuchsfreie</div><div><strong>Kontext:</strong> botschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250078','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250078','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20250078" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20250078')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20218162" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20218162</strong><br>
+  <small>Parlamentsgeschäft 20218162</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20218162" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218162','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218162','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20218162" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20218162')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20218163" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20218163</strong><br>
+  <small>Parlamentsgeschäft 20218163</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20218163" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218163','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218163','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20218163" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20218163')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20218161" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20218161</strong><br>
+  <small>Parlamentsgeschäft 20218161</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20218161" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218161','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218161','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20218161" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20218161')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20227004" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20227004</strong><br>
+  <small>Parlamentsgeschäft 20227004</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20227004" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>tierschutz, hunde, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz, hunde</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20227004','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20227004','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20227004" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20227004')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20233411" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20233411</strong><br>
+  <small>Parlamentsgeschäft 20233411</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20233411" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20233411','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20233411','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20233411" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20233411')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20237580" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20237580</strong><br>
+  <small>Parlamentsgeschäft 20237580</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20237580" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>nutztiere, wolf, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere, wolf</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237580','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237580','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20237580" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20237580')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213405" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213405</strong><br>
+  <small>Parlamentsgeschäft 20213405</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213405" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>tierschutz, versuchstiere, haltung</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz, versuchstiere</div><div><strong>Kontext:</strong> haltung</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213405','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213405','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213405" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213405')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223728" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223728</strong><br>
+  <small>Parlamentsgeschäft 20223728</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223728" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>schwein, schweine, schlacht</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Kontext:</strong> schlacht</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223728','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223728','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223728" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223728')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20244465" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20244465</strong><br>
+  <small>Parlamentsgeschäft 20244465</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20244465" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.86<br><small class="muted">Priorität: hoch</small></td>
+<td>nutztiere, heimtier, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere, heimtier</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.86</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244465','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244465','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20244465" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20244465')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20250404-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>25.404 · Indirekter Gegenentwurf zur Stopfleber-Initiative</strong><br>
+  <small>Kurzfassung: Das Geschäft behandelt stopfleber, foie gras. Einordnung: Es hat einen indirekten bzw. unklaren Tierbezug.</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20250404" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.82<br><small class="muted">Priorität: hoch</small></td>
+<td>stopfleber, foie gras, initiative</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> stopfleber, foie gras</div><div><strong>Kontext:</strong> initiative</div><div><strong>Score:</strong> 0.82</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250404-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250404-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20250404-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20250404-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20244695" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20244695</strong><br>
+  <small>Parlamentsgeschäft 20244695</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20244695" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.75<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, tierversuche</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche</div><div><strong>Score:</strong> 0.75</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244695','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244695','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20244695" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20244695')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20244696" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20244696</strong><br>
+  <small>Parlamentsgeschäft 20244696</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20244696" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.75<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, tierversuche</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche</div><div><strong>Score:</strong> 0.75</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244696','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244696','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20244696" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20244696')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254487-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>25.4487 · Einseitige vegetarische Rezeptempfehlungen des BLV für Kinder</strong><br>
+  <small>Kurzfassung: Das Geschäft behandelt nutrition. Einordnung: Es hat einen indirekten bzw. unklaren Tierbezug.</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254487" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.73<br><small class="muted">Priorität: mittel</small></td>
+<td>nutrition, landwirtschaft, agriculture</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutrition</div><div><strong>Kontext:</strong> landwirtschaft, agriculture</div><div><strong>Score:</strong> 0.73</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254487-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254487-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254487-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254487-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20202018" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20202018</strong><br>
+  <small>Parlamentsgeschäft 20202018</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20202018" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>schwein, schweine</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20202018','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20202018','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20202018" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20202018')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20214167" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20214167</strong><br>
+  <small>Parlamentsgeschäft 20214167</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20214167" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>schwein, schweine</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20214167','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20214167','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20214167" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20214167')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20212004" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20212004</strong><br>
+  <small>Parlamentsgeschäft 20212004</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20212004" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, tierversuche</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20212004','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20212004','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20212004" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20212004')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213364" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213364</strong><br>
+  <small>Parlamentsgeschäft 20213364</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213364" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, tierversuche</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213364','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213364','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213364" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213364')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213363" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213363</strong><br>
+  <small>Parlamentsgeschäft 20213363</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213363" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, tierversuche</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213363','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213363','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213363" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213363')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223300" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223300</strong><br>
+  <small>Parlamentsgeschäft 20223300</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223300" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, 3r</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, 3r</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223300','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223300','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223300" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223300')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20240436" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20240436</strong><br>
+  <small>Parlamentsgeschäft 20240436</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20240436" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>tierversuch, tierversuche</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch, tierversuche</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20240436','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20240436','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20240436" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20240436')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223210" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223210</strong><br>
+  <small>Parlamentsgeschäft 20223210</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223210" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>schwein, schweine</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> schwein, schweine</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223210','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223210','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223210" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223210')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20258205" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20258205</strong><br>
+  <small>Parlamentsgeschäft 20258205</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20258205" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.72<br><small class="muted">Priorität: mittel</small></td>
+<td>tiere, tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tiere, tierschutz</div><div><strong>Score:</strong> 0.72</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20258205','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20258205','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20258205" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20258205')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223187" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223187</strong><br>
+  <small>Parlamentsgeschäft 20223187</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223187" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.70<br><small class="muted">Priorität: mittel</small></td>
+<td>tierwohl, geflügel, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierwohl, geflügel</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.70</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223187','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223187','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223187" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223187')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20253976" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20253976</strong><br>
+  <small>Parlamentsgeschäft 20253976</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20253976" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.61<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, schlacht</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> schlacht</div><div><strong>Score:</strong> 0.61</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20253976','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20253976','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20253976" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20253976')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254010" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254010</strong><br>
+  <small>Parlamentsgeschäft 20254010</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254010" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.59<br><small class="muted">Priorität: mittel</small></td>
+<td>geflügel, gesetz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> geflügel</div><div><strong>Kontext:</strong> gesetz, landwirtschaft</div><div><strong>Score:</strong> 0.59</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254010','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254010','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254010" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254010')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20201046" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20201046</strong><br>
+  <small>Parlamentsgeschäft 20201046</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20201046" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, schweizer tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> schweizer tierschutz</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20201046','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20201046','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20201046" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20201046')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20203849" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20203849</strong><br>
+  <small>Parlamentsgeschäft 20203849</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20203849" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203849','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203849','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20203849" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20203849')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20204340" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20204340</strong><br>
+  <small>Parlamentsgeschäft 20204340</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20204340" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204340','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204340','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20204340" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20204340')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20203591" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20203591</strong><br>
+  <small>Parlamentsgeschäft 20203591</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20203591" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203591','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203591','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20203591" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20203591')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20204108" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20204108</strong><br>
+  <small>Parlamentsgeschäft 20204108</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20204108" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204108','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204108','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20204108" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20204108')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20204730" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20204730</strong><br>
+  <small>Parlamentsgeschäft 20204730</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20204730" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204730','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204730','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20204730" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20204730')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20204731" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20204731</strong><br>
+  <small>Parlamentsgeschäft 20204731</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20204731" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204731','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204731','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20204731" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20204731')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213002" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213002</strong><br>
+  <small>Parlamentsgeschäft 20213002</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213002" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213002','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213002','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213002" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213002')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20232009" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20232009</strong><br>
+  <small>Parlamentsgeschäft 20232009</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20232009" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, schweizer tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> schweizer tierschutz</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20232009','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20232009','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20232009" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20232009')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20250059" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20250059</strong><br>
+  <small>Parlamentsgeschäft 20250059</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20250059" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, botschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> botschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250059','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20250059','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20250059" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20250059')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213835" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213835</strong><br>
+  <small>Parlamentsgeschäft 20213835</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213835" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213835','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213835','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213835" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213835')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213829" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213829</strong><br>
+  <small>Parlamentsgeschäft 20213829</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213829" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213829','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213829','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213829" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213829')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20237131" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20237131</strong><br>
+  <small>Parlamentsgeschäft 20237131</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20237131" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237131','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237131','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20237131" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20237131')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20237608" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20237608</strong><br>
+  <small>Parlamentsgeschäft 20237608</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20237608" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237608','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237608','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20237608" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20237608')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20237657" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20237657</strong><br>
+  <small>Parlamentsgeschäft 20237657</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20237657" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237657','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237657','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20237657" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20237657')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20237858" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20237858</strong><br>
+  <small>Parlamentsgeschäft 20237858</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20237858" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> tierschutzkritisch</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237858','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237858','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20237858" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20237858')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254812" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254812</strong><br>
+  <small>Parlamentsgeschäft 20254812</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254812" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.58<br><small class="muted">Priorität: mittel</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.58</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254812','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254812','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254812" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254812')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254788" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254788</strong><br>
+  <small>Parlamentsgeschäft 20254788</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254788" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.56<br><small class="muted">Priorität: mittel</small></td>
+<td>ernährung, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> ernährung</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.56</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254788','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254788','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254788" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254788')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254380" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254380</strong><br>
+  <small>Parlamentsgeschäft 20254380</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254380" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.56<br><small class="muted">Priorität: mittel</small></td>
+<td>geflügel, gesetz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> geflügel</div><div><strong>Kontext:</strong> gesetz, landwirtschaft</div><div><strong>Score:</strong> 0.56</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254380','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254380','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254380" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254380')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20203021" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20203021</strong><br>
+  <small>Parlamentsgeschäft 20203021</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20203021" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.54<br><small class="muted">Priorität: niedriger</small></td>
+<td>stopfleber, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> stopfleber</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.54</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203021','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20203021','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20203021" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20203021')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20204214" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20204214</strong><br>
+  <small>Parlamentsgeschäft 20204214</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20204214" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.48<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Störsignale:</strong> finanz</div><div><strong>Score:</strong> 0.48</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204214','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204214','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20204214" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20204214')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20227807" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20227807</strong><br>
+  <small>Parlamentsgeschäft 20227807</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20227807" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.48<br><small class="muted">Priorität: niedriger</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Störsignale:</strong> finanz</div><div><strong>Score:</strong> 0.48</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20227807','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20227807','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20227807" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20227807')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20237115" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20237115</strong><br>
+  <small>Parlamentsgeschäft 20237115</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20237115" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.48<br><small class="muted">Priorität: niedriger</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Störsignale:</strong> energie</div><div><strong>Score:</strong> 0.48</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237115','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20237115','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20237115" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20237115')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20233515" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20233515</strong><br>
+  <small>Parlamentsgeschäft 20233515</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20233515" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.48<br><small class="muted">Priorität: niedriger</small></td>
+<td>nutztiere, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> nutztiere</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Störsignale:</strong> energie</div><div><strong>Score:</strong> 0.48</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20233515','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20233515','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20233515" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20233515')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20243296" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20243296</strong><br>
+  <small>Parlamentsgeschäft 20243296</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20243296" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.47<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.47</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20243296','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20243296','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20243296" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20243296')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20204002" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20204002</strong><br>
+  <small>Parlamentsgeschäft 20204002</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20204002" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204002','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20204002','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20204002" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20204002')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20212027" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20212027</strong><br>
+  <small>Parlamentsgeschäft 20212027</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20212027" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20212027','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20212027','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20212027" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20212027')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213703" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213703</strong><br>
+  <small>Parlamentsgeschäft 20213703</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213703" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213703','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213703','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213703" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213703')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223808" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223808</strong><br>
+  <small>Parlamentsgeschäft 20223808</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223808" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierversuch</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierversuch</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223808','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223808','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223808" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223808')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223952" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223952</strong><br>
+  <small>Parlamentsgeschäft 20223952</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223952" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223952','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223952','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223952" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223952')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20244344" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20244344</strong><br>
+  <small>Parlamentsgeschäft 20244344</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20244344" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244344','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20244344','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20244344" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20244344')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20252027" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20252027</strong><br>
+  <small>Parlamentsgeschäft 20252027</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20252027" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.44<br><small class="muted">Priorität: niedriger</small></td>
+<td>tierschutz</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> tierschutz</div><div><strong>Score:</strong> 0.44</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20252027','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20252027','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20252027" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20252027')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20231034" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20231034</strong><br>
+  <small>Parlamentsgeschäft 20231034</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20231034" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.42<br><small class="muted">Priorität: niedriger</small></td>
+<td>herdenschutz, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> herdenschutz</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.42</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20231034','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20231034','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20231034" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20231034')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254809" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254809</strong><br>
+  <small>Parlamentsgeschäft 20254809</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254809" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.42<br><small class="muted">Priorität: niedriger</small></td>
+<td>geflügel, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> geflügel</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.42</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254809','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254809','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254809" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254809')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20258063" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20258063</strong><br>
+  <small>Parlamentsgeschäft 20258063</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20258063" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.40<br><small class="muted">Priorität: niedriger</small></td>
+<td>stopfleber</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> pro Tierschutz</div><div><strong>Bewertung:</strong> Klare Tier-Relevanz (Schlüsselbegriffe + Score erfüllt)</div><div><strong>Tier-Begriffe:</strong> stopfleber</div><div><strong>Score:</strong> 0.40</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20258063','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20258063','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20258063" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20258063')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20218021" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20218021</strong><br>
+  <small>Parlamentsgeschäft 20218021</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20218021" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.20<br><small class="muted">Priorität: niedriger</small></td>
+<td>motion, landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> motion, landwirtschaft</div><div><strong>Score:</strong> 0.20</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218021','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20218021','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20218021" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20218021')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20253733-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>25.3733 · Verhältnismässigkeit in der Direktzahlungsverordnung wahren</strong><br>
+  <small>Kurzfassung: Das Geschäft behandelt landwirtschaft, agriculture. Einordnung: Es hat einen indirekten bzw. unklaren Tierbezug.</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20253733" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.20<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft, agriculture</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft, agriculture</div><div><strong>Score:</strong> 0.20</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20253733-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20253733-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20253733-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20253733-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20240331-de" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>24.331 · Finanzielle Unterstützung für Imkerinnen und Imker bei geoklimatischen Ausnahmebedingungen</strong><br>
+  <small>Kurzfassung: Das Geschäft behandelt apiculteur. Einordnung: Es hat einen indirekten bzw. unklaren Tierbezug.</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20240331" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.18<br><small class="muted">Priorität: niedriger</small></td>
+<td>apiculteur</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> weak-anchor-without-context</div><div><strong>Tier-Begriffe:</strong> apiculteur</div><div><strong>Störsignale:</strong> finanz</div><div><strong>Score:</strong> 0.18</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20240331-de','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20240331-de','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20240331-de" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20240331-de')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254144" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254144</strong><br>
+  <small>Parlamentsgeschäft 20254144</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254144" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.06<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.06</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254144','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254144','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254144" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254144')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20254071" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20254071</strong><br>
+  <small>Parlamentsgeschäft 20254071</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20254071" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.06<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.06</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254071','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20254071','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20254071" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20254071')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20243277" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20243277</strong><br>
+  <small>Parlamentsgeschäft 20243277</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20243277" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.06<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.06</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20243277','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20243277','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20243277" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20243277')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20234379" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20234379</strong><br>
+  <small>Parlamentsgeschäft 20234379</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20234379" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.06<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.06</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20234379','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20234379','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20234379" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20234379')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20223302" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20223302</strong><br>
+  <small>Parlamentsgeschäft 20223302</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20223302" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.06<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.06</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223302','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20223302','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20223302" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20223302')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="ch-parliament-business-de:20213229" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Parlamentsgeschäft 20213229</strong><br>
+  <small>Parlamentsgeschäft 20213229</small><br>
+  <a class="orig-link" href="https://www.parlament.ch/de/ratsbetrieb/suche-curia-vista/geschaeft?AffairId=20213229" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>Crawler</td>
+<td>
+  <div>Parlament.ch Curia Vista (DE)</div>
+  <small class="muted">ch-parliament-business-de</small>
+</td>
+<td>0.06<br><small class="muted">Priorität: niedriger</small></td>
+<td>landwirtschaft</td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small><div><strong>Einordnung:</strong> neutral / unklar</div><div><strong>Bewertung:</strong> Keine klaren Tier-Schlüsselbegriffe gefunden</div><div><strong>Kontext:</strong> landwirtschaft</div><div><strong>Score:</strong> 0.06</div></small></td>
+<td>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213229','approved')">Approve</button>
+<button onclick="setDecision(this,'ch-parliament-business-de:20213229','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="ch-parliament-business-de:20213229" onclick="toggleFastlaneTag(this,'ch-parliament-business-de:20213229')">☆ Fastlane</button>
+</td>
+</tr>
+<tr data-id="user-input:user-1770941941585" data-status="approved" data-fastlane-tagged="0" class="">
+<td>
+  <strong>Hinweis: Taubenschutz in Gemeinde X</strong><br>
+  <small>Eingereicht durch User-Input-Kanal</small><br>
+  <a class="orig-link" href="https://example.org/hinweis" target="_blank" rel="noopener noreferrer">Original-Vorstoss öffnen</a>
+</td>
+<td>User-Feedback</td>
+<td>
+  <div>user-input</div>
+  <small class="muted">user-input</small>
+</td>
+<td>0.00<br><small class="muted">Priorität: niedriger</small></td>
+<td></td>
+<td>approved (<span class="historic">historisch</span>)</td>
+<td><small>Decision via review UI</small></td>
+<td>
+<button onclick="setDecision(this,'user-input:user-1770941941585','approved')">Approve</button>
+<button onclick="setDecision(this,'user-input:user-1770941941585','rejected')">Reject</button>
+<button class="tag-btn" data-tag-btn="user-input:user-1770941941585" onclick="toggleFastlaneTag(this,'user-input:user-1770941941585')">☆ Fastlane</button>
+</td>
+</tr></tbody>
+    </table>
+  </main>
+<script>
+const key='tierpolitik.review';
+const uiKey='tierpolitik.review.ui';
+const fastlaneTagKey='tierpolitik.review.fastlaneTags';
+const initialFastlaneTags={"ch-parliament-business-de:20223210-de":{"fastlane":true,"taggedAt":"2026-02-14T10:46:37.937Z"},"ch-parliament-business-de:20250078-de":{"fastlane":true,"taggedAt":"2026-02-14T08:25:12.936Z"},"ch-parliament-business-de:20213835-de":{"fastlane":true,"taggedAt":"2026-02-14T08:25:24.389Z"},"ch-parliament-business-de:20213405-de":{"fastlane":true,"taggedAt":"2026-02-14T08:25:32.546Z"},"ch-parliament-business-de:20233515-de":{"fastlane":true,"taggedAt":"2026-02-14T08:25:44.286Z"},"ch-parliament-business-de:20237115-de":{"fastlane":true,"taggedAt":"2026-02-14T08:25:54.185Z"},"ch-parliament-business-de:20227807-de":{"fastlane":true,"taggedAt":"2026-02-14T08:26:08.828Z"},"ch-parliament-business-de:20258205-de":{"fastlane":true,"taggedAt":"2026-02-14T08:26:27.637Z"},"ch-parliament-business-de:20244696-de":{"fastlane":true,"taggedAt":"2026-02-14T08:28:00.545Z"},"ch-parliament-business-de:20244695-de":{"fastlane":true,"taggedAt":"2026-02-14T08:28:13.450Z"},"ch-parliament-business-de:20244465-de":{"fastlane":true,"taggedAt":"2026-02-14T10:34:56.969Z"},"ch-parliament-business-de:20240436-de":{"fastlane":true,"taggedAt":"2026-02-14T10:44:57.766Z"},"ch-parliament-business-de:20223300-de":{"fastlane":true,"taggedAt":"2026-02-14T10:45:09.382Z"},"ch-parliament-business-de:20213363-de":{"fastlane":true,"taggedAt":"2026-02-14T10:45:19.848Z"},"ch-parliament-business-de:20213364-de":{"fastlane":true,"taggedAt":"2026-02-14T10:45:28.520Z"},"ch-parliament-business-de:20212004-de":{"fastlane":true,"taggedAt":"2026-02-14T10:45:41.919Z"},"ch-parliament-business-de:20253976-de":{"fastlane":true,"taggedAt":"2026-02-14T10:46:04.703Z"},"ch-parliament-business-de:20250059-de":{"fastlane":true,"taggedAt":"2026-02-14T10:46:16.584Z"},"ch-parliament-business-de:20232009-de":{"fastlane":true,"taggedAt":"2026-02-14T10:46:29.666Z"},"ch-parliament-business-de:20214167-de":{"fastlane":true,"taggedAt":"2026-02-14T10:47:07.633Z"},"ch-parliament-business-de:20252027-de":{"fastlane":true,"taggedAt":"2026-02-14T10:47:24.017Z"},"ch-parliament-business-de:20244344-de":{"fastlane":true,"taggedAt":"2026-02-14T10:47:42.196Z"},"ch-parliament-business-de:20243296-de":{"fastlane":true,"taggedAt":"2026-02-14T10:47:57.369Z"},"ch-parliament-business-de:20223952-de":{"fastlane":true,"taggedAt":"2026-02-14T10:48:16.353Z"},"ch-parliament-business-de:20223808-de":{"fastlane":true,"taggedAt":"2026-02-14T10:48:30.730Z"},"ch-parliament-business-de:20258063-de":{"fastlane":true,"taggedAt":"2026-02-14T10:48:46.707Z"},"ch-parliament-business-de:20213229-de":{"fastlane":true,"taggedAt":"2026-02-14T10:50:13.054Z"},"ch-parliament-business-de:20223302-de":{"fastlane":true,"taggedAt":"2026-02-14T10:50:31.269Z"},"ch-parliament-business-de:20231034-de":{"fastlane":true,"taggedAt":"2026-02-14T10:50:39.327Z"},"ch-parliament-business-de:20243277-de":{"fastlane":true,"taggedAt":"2026-02-14T10:51:01.036Z"},"ch-parliament-business-de:20254144-de":{"fastlane":true,"taggedAt":"2026-02-14T10:51:22.151Z"},"ch-parliament-business-de:20213703-de":{"fastlane":true,"taggedAt":"2026-02-14T10:51:32.388Z"},"ch-parliament-business-de:20212027-de":{"fastlane":true,"taggedAt":"2026-02-14T10:51:44.244Z"},"ch-municipal-parliament-bern-zurich:municipal-bern-api-c6c65c8ce8a84435af97428996dadc64":{"fastlane":true,"taggedAt":"2026-02-14T18:37:06.036Z"},"ch-municipal-parliament-bern-zurich:municipal-bern-api-13284d70bb124c23a1bbba427e8a7c5c":{"fastlane":true,"taggedAt":"2026-02-14T18:37:25.611Z"},"user-input:user-bern-2026sr0019-tierpark-alternativen-toetung":{"fastlane":true,"taggedAt":"2026-02-14T18:43:35.637Z"},"ch-municipal-parliament-bern-zurich:municipal-bern-api-b7e265b3766d43119b5279f5ea795e91":{"fastlane":true,"taggedAt":"2026-02-14T18:44:17.747Z"},"user-input:user-bern-2026sr0056-biodiversitaet":{"fastlane":true,"taggedAt":"2026-02-14T22:33:21.861Z"},"ch-parliament-business-de:20203021-de":{"fastlane":true,"taggedAt":"2026-02-14T22:33:43.182Z"},"ch-cantonal-be-rss:www-gr-be-ch-de-start-geschaefte-geschaeftssuche-geschaeftsdetail-html-guid-57c34c78ddf541f098b29f4c2be2cbfa":{"fastlane":true,"taggedAt":"2026-02-15T09:51:04.074Z"}};
+const read=()=>JSON.parse(localStorage.getItem(key)||'{}');
+const write=(v)=>localStorage.setItem(key,JSON.stringify(v,null,2));
+const readFastlaneTags=()=>{
+  const local = JSON.parse(localStorage.getItem(fastlaneTagKey)||'{}');
+  return { ...initialFastlaneTags, ...local };
+};
+const writeFastlaneTags=(v)=>localStorage.setItem(fastlaneTagKey,JSON.stringify(v));
+const readUi=()=>JSON.parse(localStorage.getItem(uiKey)||'{}');
+const writeUi=(v)=>localStorage.setItem(uiKey,JSON.stringify(v));
+
+let showDecided = false;
+
+function updateStatusSummary(){
+  const stats = { queued: 0, approved: 0, published: 0 }
+  let visibleRows = 0
+  document.querySelectorAll('tr[data-id]').forEach((row)=>{
+    const hidden = row.style.display === 'none'
+    if (hidden) return
+    visibleRows += 1
+    const status = row.getAttribute('data-status')
+    if (status && status in stats) stats[status] += 1
+  })
+  const el = document.getElementById('status-summary')
+  if (el) {
+    el.textContent = 'Status-Summen (sichtbar): queued=' + stats.queued + ', approved=' + stats.approved + ', published=' + stats.published
+    if (visibleRows === 0) el.textContent += ' · keine offenen Einträge'
+  }
+}
+
+function hideDecidedRows(){
+  const decisions = read();
+  const rows = [...document.querySelectorAll('tr[data-id]')]
+  const decidedById = {}
+
+  const localAffairDecided = new Set(Object.keys(decisions)
+    .filter((id) => String(id).startsWith('ch-parliament-'))
+    .map((id) => {
+      const external = String(id).split(':')[1] || ''
+      return String(external).split('-')[0]
+    })
+    .filter(Boolean))
+
+  rows.forEach((row)=>{
+    const id = row.getAttribute('data-id');
+    if (!id) return
+    const status = row.getAttribute('data-status') || ''
+    const serverDecided = status !== 'queued' && status !== 'new'
+    const localDecided = Boolean(decisions[id])
+    const isParliamentEntry = String(id).startsWith('ch-parliament-')
+    const affairId = isParliamentEntry ? (String(id).split(':')[1] || '').split('-')[0] : ''
+    const localAffairHit = Boolean(affairId) && localAffairDecided.has(affairId)
+    const decided = serverDecided || localDecided || localAffairHit
+    decidedById[id] = decided
+    row.style.display = (!showDecided && decided) ? 'none' : ''
+  });
+
+  document.querySelectorAll('.fastlane-card[data-id]').forEach((card)=>{
+    const id = card.getAttribute('data-id')
+    if (!id) return
+    const decided = Boolean(decidedById[id]) || Boolean(decisions[id])
+    card.style.display = decided ? 'none' : ''
+  })
+
+  const btn = document.getElementById('toggle-decided')
+  if (btn) btn.textContent = showDecided ? 'Bearbeitete ausblenden' : 'Bereits bearbeitete anzeigen'
+  updateStatusSummary();
+}
+
+function toggleDecided(){
+  showDecided = !showDecided
+  writeUi({ showDecided })
+  hideDecidedRows()
+}
+
+function renderFastlaneTagButton(id){
+  const tags = readFastlaneTags();
+  const isTagged = Boolean(tags[id]?.fastlane);
+  document.querySelectorAll('[data-tag-btn="' + id + '"]').forEach((btn)=>{
+    btn.textContent = isTagged ? '⭐ Fastlane' : '☆ Fastlane';
+  });
+}
+
+async function toggleFastlaneTag(btn,id){
+  const tags = readFastlaneTags();
+  const next = !Boolean(tags[id]?.fastlane);
+  const taggedAt = new Date().toISOString();
+  if (btn) btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/review-fastlane-tag', {
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body: JSON.stringify({ id, fastlane: next, taggedAt }),
+    });
+    if(!res.ok){
+      const txt = await res.text();
+      throw new Error(txt || 'Fastlane tag API failed');
+    }
+  } catch(err) {
+    alert('Konnte Fastlane-Tag nicht speichern.');
+    console.error(err);
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  tags[id] = { fastlane: next, taggedAt };
+  writeFastlaneTags(tags);
+  renderFastlaneTagButton(id);
+
+  const row = document.querySelector('tr[data-id="' + id + '"]');
+  if (row) row.setAttribute('data-fastlane-tagged', next ? '1' : '0');
+  const card = document.querySelector('.fastlane-card[data-id="' + id + '"]');
+  if (card) card.setAttribute('data-fastlane-tagged', next ? '1' : '0');
+
+  if (btn) btn.disabled = false;
+}
+
+async function setDecision(btn,id,status){
+  const decidedAt = new Date().toISOString();
+  const statusEl = document.getElementById('decision-status');
+  if (statusEl) statusEl.textContent = 'Speichere Entscheidung…';
+
+  if (btn) btn.disabled = true;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
+
+    const res = await fetch('/.netlify/functions/review-decision', {
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body: JSON.stringify({ id, status, decidedAt }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timer);
+
+    if(!res.ok){
+      const txt = await res.text();
+      throw new Error(txt || 'Decision API failed');
+    }
+  } catch(err) {
+    const msg = String(err?.message || err || 'unbekannter Fehler').slice(0, 220)
+    if (statusEl) statusEl.textContent = 'Fehler beim Speichern: ' + msg;
+    alert('Konnte Entscheidung nicht serverseitig speichern.\n' + msg);
+    console.error(err);
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  const s=read();
+  s[id]={status,decidedAt};
+  write(s);
+
+  const row = document.querySelector('tr[data-id="' + id + '"]');
+  if (row) {
+    row.setAttribute('data-status', status)
+    row.style.opacity = '0.72'
+    if (!showDecided) row.style.display='none'
+  }
+
+  const card = document.querySelector('.fastlane-card[data-id="' + id + '"]');
+  if (card) card.style.display = 'none'
+  updateStatusSummary();
+  if (statusEl) statusEl.textContent = 'Entscheidung gespeichert.';
+}
+
+function exportDecisions(){
+  const blob=new Blob([JSON.stringify(read(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='review-decisions.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+for (const id of Object.keys(readFastlaneTags())) renderFastlaneTagButton(id)
+hideDecidedRows();
+</script>
+</body>
+</html>
