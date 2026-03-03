@@ -20,6 +20,7 @@
 <div class="wrap">
   <h1>Debug – Tierpolitik Monitor</h1>
   <p><a href="/">Home</a> · <a href="/review.html">Review</a></p>
+  <div id="health" class="card" style="margin-bottom:10px"></div>
   <div id="cards" class="cards"></div>
 
   <h2>Nach Quelle</h2>
@@ -34,11 +35,39 @@
 <script>
 function td(v){return `<td>${v ?? ''}</td>`}
 fetch('/data/debug-stats.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  const bySource = Object.fromEntries((d.by_source||[]).map(x=>[x.source_key,x]));
+  const chYes = (bySource['ch-bund-curia-vista']?.yes || 0) + (bySource['ch-bund-legacy-curated']?.yes || 0);
+  const beYes = (bySource['ch-be-grosser-rat']?.yes || 0) + (bySource['ch-be-legacy-rss']?.yes || 0);
+  const queue = d.review_queue || 0;
+
+  let state='GREEN', color='#16a34a', msg='Alles im Sollbereich.';
+  const problems=[];
+  if(chYes===0){problems.push('CH hat 0 yes-Treffer');}
+  if(beYes===0){problems.push('BE hat 0 yes-Treffer');}
+  if(queue>180){problems.push(`Review-Queue sehr hoch (${queue})`);}
+
+  if(chYes===0 || beYes===0){
+    state='RED'; color='#dc2626'; msg='Datenversorgung unvollständig.';
+  } else if(queue>120){
+    state='YELLOW'; color='#f59e0b'; msg='Queue erhöht – Review-Belastung hoch.';
+  }
+
+  document.getElementById('health').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:14px;height:14px;border-radius:999px;background:${color}"></div>
+      <strong>${state}</strong>
+      <span>${msg}</span>
+    </div>
+    ${problems.length?`<div style="margin-top:6px;font-size:13px">Hinweise: ${problems.join(' · ')}</div>`:''}
+  `;
+
   const cards=[
     ['Items total',d.items_total],
     ['Home visible',d.items_home_visible],
     ['Home yes',d.items_home_yes],
     ['Review queue',d.review_queue],
+    ['CH yes',chYes],
+    ['BE yes',beYes],
   ];
   document.getElementById('cards').innerHTML = cards.map(([k,v])=>`<div class="card"><div>${k}</div><div style="font-size:24px;font-weight:700">${v}</div></div>`).join('');
 
