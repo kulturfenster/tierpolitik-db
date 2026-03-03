@@ -22,16 +22,6 @@ function formatDateCH(isoDate: string) {
   return `${m[3]}.${m[2]}.${m[1]}`
 }
 
-function pickKeywords(raw: string) {
-  const lines = raw.split(/\r?\n/).map((line) => line.trim())
-  const bullets = lines
-    .filter((line) => line.startsWith('- '))
-    .map((line) => line.replace(/^-\s+/, ''))
-    .filter(Boolean)
-
-  return bullets.slice(0, 4).join(' · ')
-}
-
 function weekdayDE(isoDate: string) {
   const [y, m, d] = isoDate.split('-').map(Number)
   const dt = new Date(Date.UTC(y, (m || 1) - 1, d || 1))
@@ -47,6 +37,21 @@ function inferWeather(raw: string) {
   return { emoji: '🌤️', label: 'keine Angabe' }
 }
 
+function extractBullets(raw: string): string[] {
+  return raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .slice(0, 20)
+}
+
+function summaryFromBullets(bullets: string[]): string {
+  return bullets
+    .slice(0, 4)
+    .map((line) => line.replace(/^-\s+/, '').trim())
+    .filter(Boolean)
+    .join(' · ')
+}
 
 function isoDateFromTimestamp(value: string) {
   if (!value) return null
@@ -65,11 +70,10 @@ function isoDateFromTimestamp(value: string) {
   return `${year}-${month}-${day}`
 }
 
-function collectActivityBulletsByDate() {
-  const tasks = listTasks()
+function collectActivityByDate() {
   const byDate = new Map<string, string[]>()
 
-  for (const task of tasks) {
+  for (const task of listTasks()) {
     const isoDate = isoDateFromTimestamp(task.updatedAt as string)
     if (!isoDate) continue
 
@@ -83,6 +87,7 @@ function collectActivityBulletsByDate() {
 
     const agent = String(task.assignee || 'unknown')
     const bullet = `- ${task.title} (${agent} · ${statusLabel})`
+
     if (!byDate.has(isoDate)) byDate.set(isoDate, [])
     const list = byDate.get(isoDate)!
     if (!list.includes(bullet)) list.push(bullet)
@@ -93,77 +98,71 @@ function collectActivityBulletsByDate() {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     })
+
     for (const line of raw.split(/\r?\n/)) {
       const trimmed = line.trim()
       if (!trimmed) continue
+
       const [date, subjectRaw] = trimmed.split('|')
       const subject = String(subjectRaw || '').trim()
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !subject) continue
+
       const bullet = `- ${subject} (Commit)`
       if (!byDate.has(date)) byDate.set(date, [])
       const list = byDate.get(date)!
       if (!list.includes(bullet)) list.push(bullet)
     }
   } catch {
-    // git history unavailable -> ignore
+    // git history unavailable; continue with tasks only
   }
 
   return byDate
 }
 
-function extractActivityBulletsFromContent(content: string): string[] {
-  return content
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith('- '))
-    .slice(0, 20)
-}
+function withDailyWorkSummary(rows: DiaryRow[]): DiaryRow[] {
+  const activityByDate = collectActivityByDate()
 
-function mergeTaskSummaryIntoDiaryRows(rows: DiaryRow[]): DiaryRow[] {
-  const byDate = collectActivityBulletsByDate()
-  const out: DiaryRow[] = rows.map((row) => {
-    const bulletsFromActivity = byDate.get(row.date) || []
-    const bulletsFromContent = extractActivityBulletsFromContent(row.content)
-    const mergedBullets = (bulletsFromActivity.length > 0 ? bulletsFromActivity : bulletsFromContent)
-    const activityBullets = mergedBullets.length > 0
-      ? mergedBullets
-      : ['- Keine erkannten Aktivitäten für diesen Tag.']
+  const merged = rows.map((row) => {
+    const activityBullets = activityByDate.get(row.date) ?? []
+    const contentBullets = extractBullets(row.content)
+    const bullets = activityBullets.length > 0 ? activityBullets : contentBullets
 
-    const hasSection = /##\s*Woran wir gearbeitet haben/i.test(row.content)
-    const content = hasSection
+    const hasSummarySection = /##\s*Woran wir gearbeitet haben/i.test(row.content)
+    const content = hasSummarySection || bullets.length === 0
       ? row.content
       : [
           row.content.trimEnd(),
           '',
           '## Woran wir gearbeitet haben',
-          ...activityBullets.slice(0, 20),
+          ...bullets,
           '',
         ].join('\n')
 
-    const excerptSource = activityBullets
-      .slice(0, 4)
-      .map((line) => line.replace(/^-\s+/, ''))
-      .join(' · ')
+    const summary = summaryFromBullets(bullets)
 
     return {
       ...row,
-      excerpt: excerptSource,
+      excerpt: summary || row.excerpt,
       content,
     }
   })
 
-  const existingDates = new Set(out.map((row) => row.date))
-  for (const [date, bullets] of byDate.entries()) {
+  const existingDates = new Set(merged.map((row) => row.date))
+
+  for (const [date, bullets] of activityByDate.entries()) {
     if (existingDates.has(date)) continue
+
     const content = [
       `# Tageszusammenfassung ${formatDateCH(date)}`,
       '',
       '## Woran wir gearbeitet haben',
-      ...bullets.slice(0, 20),
+      ...bullets,
       '',
     ].join('\n')
+
     const weather = inferWeather(content)
-    out.push({
+
+    merged.push({
       id: `auto-${date}`,
       title: `${formatDateCH(date)} · Auto`,
       date,
@@ -171,12 +170,12 @@ function mergeTaskSummaryIntoDiaryRows(rows: DiaryRow[]): DiaryRow[] {
       weatherEmoji: weather.emoji,
       weatherLabel: 'aus Aktivitäten erzeugt',
       path: '../diary/auto',
-      excerpt: bullets.slice(0, 4).map((line) => line.replace(/^-\s+/, '')).join(' · '),
+      excerpt: summaryFromBullets(bullets),
       content,
     })
   }
 
-  return out
+  return merged
 }
 
 const noStoreHeaders = {
@@ -200,25 +199,22 @@ export async function GET() {
       if (!raw) continue
 
       const date = file.replace(/\.md$/i, '')
-      const title = formatDateCH(date)
-      const excerpt = pickKeywords(raw)
       const weather = inferWeather(raw)
 
       rows.push({
         id: date,
-        title,
+        title: formatDateCH(date),
         date,
         weekday: weekdayDE(date),
         weatherEmoji: weather.emoji,
         weatherLabel: weather.label,
         path: `../diary/${file}`,
-        excerpt,
+        excerpt: summaryFromBullets(extractBullets(raw)),
         content: raw,
       })
     }
 
-    const merged = mergeTaskSummaryIntoDiaryRows(rows)
-
+    const merged = withDailyWorkSummary(rows)
     merged.sort((a, b) => b.date.localeCompare(a.date))
 
     return NextResponse.json({ entries: merged }, { headers: noStoreHeaders })
