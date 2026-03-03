@@ -37,7 +37,8 @@ def main():
             from politics_monitor.pm_items i
             join politics_monitor.pm_sources s on s.id = i.source_id
             left join politics_monitor.pm_classification c on c.item_id = i.id
-            and coalesce(c.label, 'unsure') in ('yes','unsure')
+            where coalesce(i.review_status, 'queued') = 'queued'
+              and coalesce(c.label, 'unsure') in ('yes','unsure')
             order by
               case coalesce(c.label, 'unsure') when 'yes' then 0 when 'unsure' then 1 else 2 end,
               i.last_seen_at desc

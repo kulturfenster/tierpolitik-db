@@ -59,7 +59,22 @@ function render(){
       </td>`;
     rows.appendChild(tr);
   }
-  rows.querySelectorAll('button[data-id]').forEach(b=>b.onclick=()=>{state.decisions[b.dataset.id]=b.dataset.v;save();render();});
+  rows.querySelectorAll('button[data-id]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.id, val=b.dataset.v;
+    try{
+      const res=await fetch('/api/review-decision',{
+        method:'POST',
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify({id,decision:val})
+      });
+      if(!res.ok) throw new Error('API failed');
+      state.decisions[id]=val;
+      save();
+      render();
+    }catch(e){
+      alert('Speichern in Neon fehlgeschlagen. Läuft der review_server.py?');
+    }
+  });
 }
 
 const toggleBtn=document.getElementById('toggleDoneBtn');
