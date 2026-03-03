@@ -5217,6 +5217,7 @@ export default function ClientBoard() {
                             void openFilePreview('cron-run-report.md', selectedCronJob.job.lastRunReportPath || '', { readOnly: true, renderMarkdown: true })
                           }}
                           title="Run-Report öffnen"
+                          style={{ color: '#e5e7eb', textDecoration: 'underline', textDecorationColor: '#52525b' }}
                         >
                           {formatCronDayMonth(selectedCronJob.job.lastRunAtMs)}
                         </a>
