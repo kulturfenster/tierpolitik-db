@@ -217,6 +217,25 @@ function radarFollowupDeadlineIso(urgency: RadarItem['urgency']) {
   return dueAt.toISOString()
 }
 
+
+const sectionEmoji: Record<Section, string> = {
+  tasks: '✅',
+  radar: '📡',
+  calendar: '🗓️',
+  agents: '🤖',
+  content: '🧩',
+  projects: '🗂️',
+  docs: '🏛️',
+  memory: '🧠',
+  people: '👥',
+  office: '🗄️',
+  health: '🩺',
+  recipes: '🧾',
+  fundraising: '💸',
+  diary: '✍️',
+  files: '📁',
+}
+
 const sectionOrder: Section[] = ['tasks', 'calendar', 'agents', 'content', 'projects', 'docs', 'memory', 'people', 'office', 'health', 'recipes', 'fundraising', 'diary', 'files']
 
 const sectionMeta: Record<Section, { label: string; hint?: string; entityType?: EntityType }> = {
@@ -4472,7 +4491,7 @@ export default function ClientBoard() {
 
   return (
     <main className="cockpit-shell" suppressHydrationWarning style={{ maxWidth: 1320, margin: '0 auto', padding: 20, display: 'grid', gridTemplateColumns: '236px 1fr', gap: 16 }}>
-      <aside style={{ background: 'linear-gradient(180deg, #1f1f1f 0%, #181818 100%)', border: '1px solid #343434', borderRadius: 14, padding: 10, height: 'fit-content', boxShadow: '0 8px 24px rgba(0,0,0,0.25)' }}>
+      <aside style={{ background: '#181818', border: '1px solid #2f2f2f', borderRadius: 14, padding: 10, height: 'fit-content' }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
           <div style={{ fontWeight: 700 }}>Cockpit 🚀</div>
         </div>
@@ -4483,10 +4502,12 @@ export default function ClientBoard() {
             data-nav="section-item"
             data-section={s}
             onClick={() => setSection(s)}
-            style={{ width: '100%', textAlign: 'left', marginBottom: 6, background: section === s ? 'linear-gradient(180deg, #2e3d56 0%, #243246 100%)' : '#181818', color: '#f5f5f5', border: section === s ? '1px solid #46618a' : '1px solid #3a3a3a', borderRadius: 10, padding: '9px 10px', boxShadow: section === s ? '0 4px 12px rgba(70,97,138,0.28)' : 'none' }}
+            style={{ width: '100%', textAlign: 'left', marginBottom: 6, background: section === s ? '#262626' : '#181818', color: '#f5f5f5', border: section === s ? '1px solid #4b5563' : '1px solid #3a3a3a', borderRadius: 10, padding: '9px 10px' }}
           >
-            <div style={{ fontWeight: 600 }}>{sectionMeta[s].label}</div>
-            {sectionMeta[s].hint && <div style={{ fontSize: 11, opacity: 0.7 }}>{sectionMeta[s].hint}</div>}
+            <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: '#ffffff' }}>{sectionEmoji[s] || '•'}</span>
+              <span>{sectionMeta[s].label}</span>
+            </div>
           </button>
         ))}
       </aside>
