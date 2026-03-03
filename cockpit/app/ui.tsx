@@ -14,7 +14,7 @@ type Task = {
   area?: 'medien' | 'politik' | 'buch' | 'ops'
   deadline?: string
   tocAxis?: 'wertschoepfung' | 'weltbild' | 'repraesentation'
-  assignee: 'Tobi' | 'ALF' | 'Beide'
+  assignee: string
 }
 
 type Entity = {
@@ -1404,6 +1404,8 @@ export default function ClientBoard() {
   const [boardError, setBoardError] = useState<string | null>(null)
   const [taskActionPending, setTaskActionPending] = useState<Record<string, boolean>>({})
   const [dragTaskId, setDragTaskId] = useState<string | null>(null)
+  const [taskCreatePending, setTaskCreatePending] = useState(false)
+  const [taskDraft, setTaskDraft] = useState({ title: '', assignee: 'tif-website', status: 'doing' as Task['status'] })
   const [entityActionPending, setEntityActionPending] = useState<Record<string, boolean>>({})
   const [radar, setRadar] = useState<RadarItem[]>(() => cachedRadar?.rows || [])
   const radarRef = useRef<RadarItem[]>(cachedRadar?.rows || [])
@@ -3544,6 +3546,39 @@ export default function ClientBoard() {
     }
   }
 
+  async function createAgentTask(input: { title: string; assignee: string; status: Task['status'] }) {
+    const title = String(input.title || '').trim()
+    if (!title) return
+
+    setTaskCreatePending(true)
+    try {
+      const payload = {
+        title,
+        status: input.status || 'open',
+        assignee: input.assignee || 'tif-website',
+        priority: 'normal',
+        impact: 'med',
+      }
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const body = await res.json().catch(() => null)
+      if (!res.ok || !body?.ok || !body?.task) {
+        throw new Error(body?.error || 'Task konnte nicht erstellt werden')
+      }
+      setTasks((prev) => [body.task as Task, ...prev])
+      setTaskDraft({ title: '', assignee: input.assignee || 'tif-website', status: input.status || 'doing' })
+      setBoardError(null)
+    } catch (error) {
+      setBoardError(error instanceof Error ? error.message : 'Task konnte nicht erstellt werden')
+    } finally {
+      setTaskCreatePending(false)
+    }
+  }
+
+
   async function setRadarStatus(
     id: string,
     status: 'new' | 'accepted' | 'watchlist' | 'rejected',
@@ -4532,6 +4567,47 @@ export default function ClientBoard() {
           <>
             <div style={{ marginBottom: 10, fontSize: 12, opacity: 0.78 }}>
               Heute v0.1 · Agent-Todo-Board (Drag & Drop)
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+              <input
+                value={taskDraft.title}
+                onChange={(e) => setTaskDraft((d) => ({ ...d, title: e.target.value }))}
+                placeholder="Neuer Task…"
+                style={{ minWidth: 320, flex: '1 1 320px', background: '#181818', color: '#f5f5f5', border: '1px solid #3a3a3a', borderRadius: 8, padding: '8px 10px' }}
+              />
+              <select
+                value={taskDraft.assignee}
+                onChange={(e) => setTaskDraft((d) => ({ ...d, assignee: e.target.value }))}
+                style={{ background: '#181818', color: '#f5f5f5', border: '1px solid #3a3a3a', borderRadius: 8, padding: '8px 10px' }}
+              >
+                {['main','tif-coding','tif-health','tif-medien','tif-politik','tif-text','tif-website'].map((id) => (
+                  <option key={id} value={id}>{id.replace(/^tif-/, '')}</option>
+                ))}
+              </select>
+              <select
+                value={taskDraft.status}
+                onChange={(e) => setTaskDraft((d) => ({ ...d, status: e.target.value as Task['status'] }))}
+                style={{ background: '#181818', color: '#f5f5f5', border: '1px solid #3a3a3a', borderRadius: 8, padding: '8px 10px' }}
+              >
+                <option value="open">Backlog</option>
+                <option value="doing">In progress</option>
+                <option value="waiting">Review</option>
+                <option value="done">Done</option>
+              </select>
+              <button
+                style={polishedButtonStyle}
+                disabled={taskCreatePending || !taskDraft.title.trim()}
+                onClick={() => void createAgentTask(taskDraft)}
+              >
+                {taskCreatePending ? 'Erstelle…' : 'Task erstellen'}
+              </button>
+              <button
+                style={polishedButtonStyle}
+                disabled={taskCreatePending}
+                onClick={() => void createAgentTask({ title: '2026.SR.0019 – Tierpark Bern: Welche Alternativen zur Tötung überzähliger Tiere gibt es?', assignee: 'tif-website', status: 'doing' })}
+              >
+                SR.0019 für webmaster
+              </button>
             </div>
 
             {(() => {
