@@ -19,10 +19,11 @@ for f in IN_FILES:
         if not line.strip():
             continue
         r=json.loads(line)
-        u=(r.get('url') or '').strip()
+        u=((r.get('url') or r.get('link') or '')).strip()
         if not u or u in seen:
             continue
         seen.add(u)
+        r['url'] = u
         r['merged_from']=f.name
         rows.append(r)
 

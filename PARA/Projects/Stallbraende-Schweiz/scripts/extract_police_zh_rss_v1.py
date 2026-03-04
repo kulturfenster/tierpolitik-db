@@ -27,7 +27,15 @@ def main():
         pub = (item.findtext('pubDate') or '').strip()
         if not link:
             continue
-        items.append({'source_id': 'ch-zh-police-news', 'link': link, 'title': title, 'description': desc, 'pubDate': pub, 'fetched_at': now})
+        items.append({
+            'source_id': 'ch-zh-police-news',
+            'link': link,
+            'url': link,
+            'title': title,
+            'description': desc,
+            'pubDate': pub,
+            'fetched_at': now,
+        })
 
     OUT_LINKS.parent.mkdir(parents=True, exist_ok=True)
     with OUT_LINKS.open('w', encoding='utf-8') as f:

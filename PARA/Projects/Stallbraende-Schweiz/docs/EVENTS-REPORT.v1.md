@@ -1,6 +1,6 @@
 # Stallbrände Schweiz — Events Report v1
 
-_Generated: 2026-03-04T02:58:44.875270+00:00_
+_Generated: 2026-03-04T03:29:25.129313+00:00_
 
 - Kandidaten total: **6**
 - Kantone: UN(6)
