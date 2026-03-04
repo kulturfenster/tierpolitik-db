@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 OUT = Path('data/debug-stats.json')
 CANTONS_26 = ['AG','AI','AR','BE','BL','BS','FR','GE','GL','GR','JU','LU','NE','NW','OW','SG','SH','SO','SZ','TG','TI','UR','VD','VS','ZG','ZH']
 TARGET_MUNICIPALITIES = int(os.environ.get('TPM_TARGET_MUNICIPALITIES', '2000'))
+KNOWN_AVAILABLE_MIN_YEAR = {
+    'BE': 2012,  # current known floor of accessible BE OGD/archive endpoint
+}
 
 
 def main():
@@ -121,20 +124,31 @@ def main():
 
         by_canton_progress = []
         fulfilled = []
+        fulfilled_available = []
         for c in CANTONS_26:
             total = canton_rows.get(c, {}).get('total', 0)
             oldest = canton_rows.get(c, {}).get('oldest_year')
             newest = canton_rows.get(c, {}).get('newest_year')
             is_fulfilled = bool(total > 0 and oldest is not None and oldest <= target_year)
+            available_min = KNOWN_AVAILABLE_MIN_YEAR.get(c)
+            is_fulfilled_available = bool(
+                total > 0 and oldest is not None and (
+                    oldest <= target_year or (available_min is not None and oldest <= available_min)
+                )
+            )
             if is_fulfilled:
                 fulfilled.append(c)
+            if is_fulfilled_available:
+                fulfilled_available.append(c)
             by_canton_progress.append({
                 'canton': c,
                 'total': total,
                 'oldest_year': oldest,
                 'newest_year': newest,
                 'target_min_year': target_year,
+                'available_min_year': available_min,
                 'fulfilled': is_fulfilled,
+                'fulfilled_available': is_fulfilled_available,
             })
 
         payload['canton_progress'] = {
@@ -142,6 +156,9 @@ def main():
             'target': 26,
             'fulfilled_cantons': fulfilled,
             'missing_cantons': [c for c in CANTONS_26 if c not in fulfilled],
+            'fulfilled_available': len(fulfilled_available),
+            'fulfilled_available_cantons': fulfilled_available,
+            'missing_available_cantons': [c for c in CANTONS_26 if c not in fulfilled_available],
             'by_canton': by_canton_progress,
         }
 
