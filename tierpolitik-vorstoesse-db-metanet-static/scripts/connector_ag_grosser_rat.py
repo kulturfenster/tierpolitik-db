@@ -128,13 +128,23 @@ def main():
     else:
         offsets = sorted({int(x) for x in OFFSET_RE.findall(html)})
 
+    limit_links = re.findall(r'href="([^"]*FrmRequest=LimitList[^"]*Offset=\d+[^"]*)"', html, re.I)
+    limit_base = None
+    if limit_links:
+        limit_base = unescape(limit_links[0])
+
     pages_done = 1
     for off in offsets:
         if len(rows) >= max_rows:
             break
         if pages_done >= max_pages:
             break
-        page_url = re.sub(r'Offset=\d+', f'Offset={off}', base_result_url) if 'Offset=' in base_result_url else (base_result_url + f'&Offset={off}')
+
+        if limit_base:
+            page_url = re.sub(r'Offset=\d+', f'Offset={off}', limit_base)
+        else:
+            page_url = re.sub(r'Offset=\d+', f'Offset={off}', base_result_url) if 'Offset=' in base_result_url else (base_result_url + f'&Offset={off}')
+
         try:
             h = opener.open(Request(page_url, headers={'User-Agent': 'Mozilla/5.0'}), timeout=90).read().decode('utf-8', 'ignore')
         except Exception:
@@ -144,7 +154,7 @@ def main():
         pages_done += 1
         if len(rows) == before:
             # no new items -> likely end or blocked
-            break
+            continue
 
     rows = rows[:max_rows]
 
