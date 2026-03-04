@@ -1,12 +1,12 @@
 {
-  "items_total": 18923,
-  "items_home_visible": 18920,
+  "items_total": 22402,
+  "items_home_visible": 22399,
   "items_home_yes": 40,
   "review_queue": 128,
   "labels": [
     {
       "label": "none",
-      "count": 11896
+      "count": 15375
     },
     {
       "label": "no",
@@ -31,20 +31,20 @@
       "queued": 14542
     },
     {
+      "source_key": "ch-bl-landrat-talus",
+      "total": 5000,
+      "home_visible": 5000,
+      "yes": 0,
+      "unsure": 1,
+      "queued": 5000
+    },
+    {
       "source_key": "ch-be-grosser-rat-ogd",
       "total": 1715,
       "home_visible": 1715,
       "yes": 16,
       "unsure": 14,
       "queued": 1715
-    },
-    {
-      "source_key": "ch-bl-landrat-talus",
-      "total": 1521,
-      "home_visible": 1521,
-      "yes": 0,
-      "unsure": 1,
-      "queued": 1521
     },
     {
       "source_key": "ch-bund-curia-vista",
@@ -87,16 +87,16 @@
       "home_yes": 17
     },
     {
+      "canton": "BL",
+      "total": 5000,
+      "yes": 0,
+      "home_yes": 0
+    },
+    {
       "canton": "BE",
       "total": 1716,
       "yes": 17,
       "home_yes": 17
-    },
-    {
-      "canton": "BL",
-      "total": 1521,
-      "yes": 0,
-      "home_yes": 0
     },
     {
       "canton": "(none)",
@@ -120,7 +120,7 @@
     },
     {
       "municipality": "(none)",
-      "total": 4345,
+      "total": 7824,
       "yes": 24,
       "home_yes": 23
     }
