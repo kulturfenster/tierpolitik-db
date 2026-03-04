@@ -1,16 +1,16 @@
 {
-  "items_total": 29400,
-  "items_home_visible": 29397,
-  "items_home_yes": 50,
-  "review_queue": 141,
+  "items_total": 29401,
+  "items_home_visible": 29398,
+  "items_home_yes": 51,
+  "review_queue": 142,
   "labels": [
     {
       "label": "none",
-      "count": 21906
+      "count": 21857
     },
     {
       "label": "no",
-      "count": 7324
+      "count": 7373
     },
     {
       "label": "unsure",
@@ -18,17 +18,17 @@
     },
     {
       "label": "yes",
-      "count": 51
+      "count": 52
     }
   ],
   "by_source": [
     {
       "source_key": "ch-zh-gemeinderat-api",
-      "total": 14578,
-      "home_visible": 14578,
+      "total": 14579,
+      "home_visible": 14579,
       "yes": 17,
       "unsure": 93,
-      "queued": 14542
+      "queued": 14543
     },
     {
       "source_key": "ch-bl-landrat-talus",
@@ -42,7 +42,7 @@
       "source_key": "ch-ag-grosser-rat",
       "total": 5931,
       "home_visible": 5931,
-      "yes": 10,
+      "yes": 11,
       "unsure": 3,
       "queued": 5931
     },
@@ -90,7 +90,7 @@
   "by_canton": [
     {
       "canton": "ZH",
-      "total": 14581,
+      "total": 14582,
       "yes": 18,
       "home_yes": 17
     },
@@ -103,8 +103,8 @@
     {
       "canton": "AG",
       "total": 5931,
-      "yes": 10,
-      "home_yes": 10
+      "yes": 11,
+      "home_yes": 11
     },
     {
       "canton": "BE",
@@ -129,12 +129,12 @@
     {
       "municipality": "(none)",
       "total": 14822,
-      "yes": 34,
-      "home_yes": 33
+      "yes": 35,
+      "home_yes": 34
     },
     {
       "municipality": "Zürich",
-      "total": 14578,
+      "total": 14579,
       "yes": 17,
       "home_yes": 17
     }
@@ -375,7 +375,7 @@
       },
       {
         "canton": "ZH",
-        "total": 14581,
+        "total": 14582,
         "oldest_year": 2000,
         "newest_year": 2026,
         "target_min_year": 2000,
