@@ -1,26 +1,20 @@
 #!/usr/bin/env python3
-"""Stallbrände Schweiz – Crawler Pipeline v0 (seed + raw capture)
-
-- loads source registry
-- pulls basic metadata from source URLs
-- writes raw snapshots for manual triage
-
-This is intentionally conservative for v0: it builds a reproducible ingestion spine
-without overfitting brittle parsers too early.
-"""
+"""Stallbrände Schweiz – Crawler Pipeline v0 (seed + raw capture)."""
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import Request, urlopen
-import re
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "data" / "stallbraende" / "sources.v0.json"
 OUT_DIR = ROOT / "data" / "stallbraende"
 OUT_JSONL = OUT_DIR / "events.raw.v0.jsonl"
+SNAPSHOT_DIR = OUT_DIR / "snapshots.v0"
 
 
 @dataclass
@@ -32,6 +26,7 @@ class RawEvent:
     title: str | None
     snippet: str | None
     http_status: int | None
+    html_path: str | None
 
 
 def fetch_html(url: str) -> tuple[int | None, str]:
@@ -54,6 +49,15 @@ def extract_title_snippet(html: str) -> tuple[str | None, str | None]:
     return title, snippet
 
 
+def save_snapshot(source_id: str, fetched_at: str, html: str) -> str:
+    stamp = fetched_at.replace(":", "-")[:19]
+    digest = hashlib.sha1(html.encode("utf-8", "ignore")).hexdigest()[:10]
+    SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+    path = SNAPSHOT_DIR / f"{source_id}__{stamp}__{digest}.html"
+    path.write_text(html, encoding="utf-8")
+    return str(path.relative_to(ROOT))
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     sources = json.loads(SOURCES.read_text(encoding="utf-8"))
@@ -64,6 +68,7 @@ def main() -> None:
         try:
             status, html = fetch_html(s["url"])
             title, snippet = extract_title_snippet(html)
+            html_path = save_snapshot(s["id"], now, html)
             rows.append(
                 RawEvent(
                     source_id=s["id"],
@@ -73,6 +78,7 @@ def main() -> None:
                     title=title,
                     snippet=snippet,
                     http_status=status,
+                    html_path=html_path,
                 )
             )
         except Exception as e:
@@ -85,6 +91,7 @@ def main() -> None:
                     title=None,
                     snippet=f"FETCH_ERROR: {e}",
                     http_status=None,
+                    html_path=None,
                 )
             )
 

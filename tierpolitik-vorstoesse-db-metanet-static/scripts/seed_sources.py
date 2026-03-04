@@ -12,7 +12,8 @@ values
 ('ch-be-grosser-rat','Kanton Bern – Grosser Rat Vorstösse','kanton','CH','BE','html_list','https://www.gr.be.ch','https://www.gr.be.ch/de/start/geschaefte/geschaeftssuche',true,1440),
 ('ch-be-grosser-rat-ogd','Kanton Bern – Grosser Rat OGD Geschäfte','kanton','CH','BE','api_json','https://ogd.parl.apps.be.ch','https://ogd.parl.apps.be.ch/data/geschaeft.json',true,1440),
 ('ch-bern-stadtrat','Stadt Bern – Stadtrat Vorstösse','gemeinde','CH','BE','html_list','https://stadtrat.bern.ch','https://stadtrat.bern.ch/de/geschaefte/suche',true,1440),
-('ch-zh-gemeinderat-api','Stadt Zürich – Gemeinderat Geschäfte (API)','gemeinde','CH','ZH','api_json','https://www.gemeinderat-zuerich.ch','https://www.gemeinderat-zuerich.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php?search=done&page=1',true,1440)
+('ch-zh-gemeinderat-api','Stadt Zürich – Gemeinderat Geschäfte (API)','gemeinde','CH','ZH','api_json','https://www.gemeinderat-zuerich.ch','https://www.gemeinderat-zuerich.ch/format/module/politik_axioma/geschaefte/geschaefte_data_server.php?search=done&page=1',true,1440),
+('ch-bs-grosser-rat-neu','Basel-Stadt – Neue Vorstösse','kanton','CH','BS','html_list','https://www.grosserrat.bs.ch','https://www.grosserrat.bs.ch/ratsbetrieb/neue-vorstoesse',true,720)
 on conflict (source_key) do update set
   name = excluded.name,
   level = excluded.level,
