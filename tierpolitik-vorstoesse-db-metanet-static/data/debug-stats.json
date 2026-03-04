@@ -1,12 +1,12 @@
 {
-  "items_total": 16385,
-  "items_home_visible": 16382,
+  "items_total": 17401,
+  "items_home_visible": 17398,
   "items_home_yes": 40,
   "review_queue": 127,
   "labels": [
     {
       "label": "none",
-      "count": 9869
+      "count": 10885
     },
     {
       "label": "no",
@@ -24,11 +24,11 @@
   "by_source": [
     {
       "source_key": "ch-zh-gemeinderat-api",
-      "total": 13561,
-      "home_visible": 13561,
+      "total": 14577,
+      "home_visible": 14577,
       "yes": 17,
       "unsure": 93,
-      "queued": 13525
+      "queued": 14541
     },
     {
       "source_key": "ch-be-grosser-rat-ogd",
@@ -74,7 +74,7 @@
   "by_canton": [
     {
       "canton": "ZH",
-      "total": 13564,
+      "total": 14580,
       "yes": 18,
       "home_yes": 17
     },
@@ -100,7 +100,7 @@
   "by_municipality_top": [
     {
       "municipality": "Zürich",
-      "total": 13561,
+      "total": 14577,
       "yes": 17,
       "home_yes": 17
     },
@@ -148,9 +148,9 @@
   "year_progress": {
     "current_year": 2026,
     "target_min_year": 2000,
-    "oldest_year": 2020,
-    "newest_year": 2025,
-    "covered_years_back": 6,
+    "oldest_year": 2000,
+    "newest_year": 2026,
+    "covered_years_back": 26,
     "target_years_back": 26
   }
 }

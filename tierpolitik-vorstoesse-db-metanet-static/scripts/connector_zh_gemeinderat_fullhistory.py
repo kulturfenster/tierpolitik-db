@@ -98,6 +98,9 @@ def main():
                                 submitted_at = datetime.fromisoformat(begin[:10]).date()
                             except Exception:
                                 submitted_at = None
+                        if submitted_at is None and year is not None:
+                            # fallback: use GRNr year to preserve historical depth in metrics
+                            submitted_at = datetime(year, 1, 1).date()
 
                         body_parts = []
                         for n in ['Geschaeftsart', 'Geschaeftsstatus', 'Erstunterzeichner', 'Mitunterzeichner', 'VorberatendeKommission', 'Traktanden']:
