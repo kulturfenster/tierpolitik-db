@@ -7,6 +7,7 @@ IN_FILES = [
     ROOT / 'data' / 'stallbraende' / 'articles.filtered.v1.jsonl',
     ROOT / 'data' / 'stallbraende' / 'articles.police.v1.jsonl',
     ROOT / 'data' / 'stallbraende' / 'articles.police.zh.rss.v1.jsonl',
+    ROOT / 'data' / 'stallbraende' / 'articles.police.be.newsid.v1.jsonl',
 ]
 OUT = ROOT / 'data' / 'stallbraende' / 'articles.merged.v1.jsonl'
 
