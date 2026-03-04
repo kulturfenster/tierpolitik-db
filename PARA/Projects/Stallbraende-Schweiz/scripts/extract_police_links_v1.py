@@ -11,7 +11,7 @@ OUT = ROOT / 'data' / 'stallbraende' / 'links.police.v1.jsonl'
 
 POLICE_IDS = {'ch-be-police-news', 'ch-zh-police-news', 'ch-lu-police-news', 'ch-ag-police-news'}
 HREF = re.compile(r'href=["\']([^"\']+)["\']', re.I)
-KEEP = re.compile(r'(medien|mitteilung|news|aktuell|einsatz|brand|feuer|ereignis)', re.I)
+KEEP = re.compile(r'(medien|mitteilung|news|aktuell|einsatz|brand|feuer|ereignis|detail|artikel|story)', re.I)
 
 
 def fetch(url: str) -> str:
@@ -41,7 +41,7 @@ def main():
                 continue
             if not KEEP.search(full):
                 continue
-            if any(x in full.lower() for x in ['#', 'linkedin.com', 'readspeaker', '.pdf', '/kontakt', '/impressum']):
+            if any(x in full.lower() for x in ['#', 'linkedin.com', '.pdf', '/kontakt', '/impressum']):
                 continue
             k = (sid, full)
             if k in seen:
