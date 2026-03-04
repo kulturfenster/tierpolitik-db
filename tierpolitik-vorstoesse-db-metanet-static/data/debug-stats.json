@@ -1,24 +1,24 @@
 {
-  "items_total": 26977,
-  "items_home_visible": 26974,
-  "items_home_yes": 49,
-  "review_queue": 139,
+  "items_total": 29400,
+  "items_home_visible": 29397,
+  "items_home_yes": 50,
+  "review_queue": 141,
   "labels": [
     {
       "label": "none",
-      "count": 19518
+      "count": 21906
     },
     {
       "label": "no",
-      "count": 7291
+      "count": 7324
     },
     {
       "label": "unsure",
-      "count": 118
+      "count": 119
     },
     {
       "label": "yes",
-      "count": 50
+      "count": 51
     }
   ],
   "by_source": [
@@ -40,11 +40,11 @@
     },
     {
       "source_key": "ch-ag-grosser-rat",
-      "total": 3508,
-      "home_visible": 3508,
-      "yes": 9,
-      "unsure": 2,
-      "queued": 3508
+      "total": 5931,
+      "home_visible": 5931,
+      "yes": 10,
+      "unsure": 3,
+      "queued": 5931
     },
     {
       "source_key": "ch-be-grosser-rat-ogd",
@@ -102,9 +102,9 @@
     },
     {
       "canton": "AG",
-      "total": 3508,
-      "yes": 9,
-      "home_yes": 9
+      "total": 5931,
+      "yes": 10,
+      "home_yes": 10
     },
     {
       "canton": "BE",
@@ -127,27 +127,27 @@
   ],
   "by_municipality_top": [
     {
+      "municipality": "(none)",
+      "total": 14822,
+      "yes": 34,
+      "home_yes": 33
+    },
+    {
       "municipality": "Zürich",
       "total": 14578,
       "yes": 17,
       "home_yes": 17
-    },
-    {
-      "municipality": "(none)",
-      "total": 12399,
-      "yes": 33,
-      "home_yes": 32
     }
   ],
   "canton_progress": {
-    "fulfilled": 2,
+    "fulfilled": 3,
     "target": 26,
     "fulfilled_cantons": [
+      "AG",
       "BL",
       "ZH"
     ],
     "missing_cantons": [
-      "AG",
       "AI",
       "AR",
       "BE",
@@ -175,11 +175,11 @@
     "by_canton": [
       {
         "canton": "AG",
-        "total": 3508,
-        "oldest_year": 2019,
+        "total": 5931,
+        "oldest_year": 1997,
         "newest_year": 2020,
         "target_min_year": 2000,
-        "fulfilled": false
+        "fulfilled": true
       },
       {
         "canton": "AI",
@@ -396,8 +396,8 @@
     "target": 2000
   },
   "project_progress": {
-    "ratio": 0.3847,
-    "percent": 38.5,
+    "ratio": 0.402,
+    "percent": 40.2,
     "weights": {
       "cantons": 0.45,
       "years": 0.35,
@@ -405,7 +405,7 @@
     },
     "components": {
       "cantons": {
-        "fulfilled": 2,
+        "fulfilled": 3,
         "target": 26
       },
       "years": {
