@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Tierpolitik Monitor – Review Inbox (DB)</title>
+  <link rel="icon" href="/favicon-search.svg" type="image/svg+xml" />
   <style>
     body{font-family:Arial,sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:16px}
     .wrap{max-width:1200px;margin:0 auto}
@@ -38,6 +39,7 @@
 const state={items:[],decisions:{},showDone:false,selected:0};
 const rows=document.getElementById('rows');
 const key='tpm.review.decisions.v1';
+const apiEnabled = window.location.port === '8787';
 state.decisions=JSON.parse(localStorage.getItem(key)||'{}');
 
 function save(){localStorage.setItem(key,JSON.stringify(state.decisions));}
@@ -47,6 +49,14 @@ function visibleItems(){
 }
 
 async function applyDecision(id,val){
+  // Static monitor mode (port 8888): keep local decisions only.
+  if(!apiEnabled){
+    state.decisions[id]=val;
+    save();
+    render();
+    return;
+  }
+
   try{
     const res=await fetch('/api/review-decision',{
       method:'POST',
@@ -123,10 +133,14 @@ document.addEventListener('keydown', async (e)=>{
 });
 
 updateToggleBtn();
-fetch('/api/health',{cache:'no-store'})
-  .then(r=>r.json())
-  .then(h=>{document.getElementById('health').textContent = h.ok ? 'Neon: verbunden ✅' : 'Neon: Fehler ❌';})
-  .catch(()=>{document.getElementById('health').textContent='Neon: nicht erreichbar ❌';});
+if(apiEnabled){
+  fetch('/api/health',{cache:'no-store'})
+    .then(r=>r.json())
+    .then(h=>{document.getElementById('health').textContent = h.ok ? 'Neon: verbunden ✅' : 'Neon: Fehler ❌';})
+    .catch(()=>{document.getElementById('health').textContent='Neon: nicht erreichbar ❌';});
+}else{
+  document.getElementById('health').textContent='Neon: read-only (Static-Mode)';
+}
 
 fetch('/data/review-inbox.json',{cache:'no-store'})
   .then(r=>r.json())
