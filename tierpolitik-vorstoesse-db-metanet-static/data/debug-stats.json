@@ -1,9 +1,13 @@
 {
-  "items_total": 6527,
-  "items_home_visible": 6524,
+  "items_total": 16385,
+  "items_home_visible": 16382,
   "items_home_yes": 40,
   "review_queue": 127,
   "labels": [
+    {
+      "label": "none",
+      "count": 9869
+    },
     {
       "label": "no",
       "count": 6360
@@ -15,20 +19,16 @@
     {
       "label": "yes",
       "count": 41
-    },
-    {
-      "label": "none",
-      "count": 11
     }
   ],
   "by_source": [
     {
       "source_key": "ch-zh-gemeinderat-api",
-      "total": 3703,
-      "home_visible": 3703,
+      "total": 13561,
+      "home_visible": 13561,
       "yes": 17,
       "unsure": 93,
-      "queued": 3667
+      "queued": 13525
     },
     {
       "source_key": "ch-be-grosser-rat-ogd",
@@ -74,7 +74,7 @@
   "by_canton": [
     {
       "canton": "ZH",
-      "total": 3706,
+      "total": 13564,
       "yes": 18,
       "home_yes": 17
     },
@@ -100,7 +100,7 @@
   "by_municipality_top": [
     {
       "municipality": "Zürich",
-      "total": 3703,
+      "total": 13561,
       "yes": 17,
       "home_yes": 17
     },
