@@ -9,7 +9,13 @@ ROOT = Path(__file__).resolve().parents[1]
 INP = ROOT / 'data' / 'stallbraende' / 'links.police.v1.jsonl'
 OUT = ROOT / 'data' / 'stallbraende' / 'articles.police.v1.jsonl'
 
-KEYWORD = re.compile(r'(stallbrand|stall\s*brand|brand.*stall|huehnerstall|h\u00fchnerstall|schweinestall|rinderstall|kuhstall|viehstall|bauernhof.*brand|masth\u00fchner|masthuehner|ferkel|k\u00e4lber|kaelber|legehennen)', re.I)
+KEYWORD = re.compile(
+    r'(stallbrand|stall\s*brand|brand.*stall|huehnerstall|h\u00fchnerstall|schweinestall|rinderstall|kuhstall|viehstall|'
+    r'scheunenbrand|brand.*scheune|oekonomiegebaeude|\xF6konomiegeb[aä]ude|landwirtschaftsbetrieb|landwirtschaftsgeb[aä]ude|'
+    r'bauernhof.*brand|heustock|heu.*brand|miststock|tierstall|tierhaltung|'
+    r'masth\u00fchner|masthuehner|ferkel|k\u00e4lber|kaelber|legehennen)',
+    re.I,
+)
 TITLE_RE = re.compile(r'<title[^>]*>(.*?)</title>', re.I | re.S)
 
 
