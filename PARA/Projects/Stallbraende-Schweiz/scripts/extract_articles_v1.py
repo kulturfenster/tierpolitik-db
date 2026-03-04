@@ -6,7 +6,7 @@ from urllib.request import Request, urlopen
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
-INP = ROOT / 'data' / 'stallbraende' / 'links.discovered.v1.jsonl'
+INP = ROOT / 'data' / 'stallbraende' / 'links.filtered.v1.jsonl'
 OUT = ROOT / 'data' / 'stallbraende' / 'articles.extracted.v1.jsonl'
 
 URL_HINT = re.compile(r'(medien|news|aktuell|mitteilung|meldung|polizei|ratsbetrieb|geschaeft)', re.I)
@@ -43,7 +43,7 @@ def main():
         links.append(rec)
 
     # cap to keep heartbeat runtime stable
-    links=links[:420]
+    links=links[:300]
 
     for rec in links:
         url=rec['link']
