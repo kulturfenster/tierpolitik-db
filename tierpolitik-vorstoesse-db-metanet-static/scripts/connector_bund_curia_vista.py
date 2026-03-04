@@ -10,13 +10,15 @@ import psycopg
 from dotenv import load_dotenv
 
 SOURCE_KEY = "ch-bund-curia-vista"
-DEFAULT_LIMIT = 10
+DEFAULT_PAGE_SIZE = 200
+DEFAULT_MAX_ROWS = 5000
 
 
-def fetch_business(limit: int = DEFAULT_LIMIT) -> list[dict]:
+def fetch_business_page(skip: int, top: int) -> list[dict]:
     params = {
         "$format": "json",
-        "$top": str(limit),
+        "$top": str(top),
+        "$skip": str(skip),
         "$orderby": "SubmissionDate desc",
         "$filter": "Language eq 'DE'",
     }
@@ -32,6 +34,21 @@ def fetch_business(limit: int = DEFAULT_LIMIT) -> list[dict]:
         if isinstance(results, list):
             return results
     return []
+
+
+def fetch_business(max_rows: int = DEFAULT_MAX_ROWS, page_size: int = DEFAULT_PAGE_SIZE) -> list[dict]:
+    out: list[dict] = []
+    skip = 0
+    while len(out) < max_rows:
+        top = min(page_size, max_rows - len(out))
+        batch = fetch_business_page(skip=skip, top=top)
+        if not batch:
+            break
+        out.extend(batch)
+        if len(batch) < top:
+            break
+        skip += len(batch)
+    return out
 
 
 def parse_date(value: str | None):
@@ -53,7 +70,8 @@ def main():
     if not db_url:
         raise SystemExit("DATABASE_URL fehlt in .env")
 
-    limit = int(os.environ.get("TPM_CONNECTOR_LIMIT", str(DEFAULT_LIMIT)))
+    page_size = int(os.environ.get("TPM_CH_PAGE_SIZE", str(DEFAULT_PAGE_SIZE)))
+    max_rows = int(os.environ.get("TPM_CH_MAX_ROWS", str(DEFAULT_MAX_ROWS)))
 
     with psycopg.connect(db_url) as conn:
         with conn.cursor() as cur:
@@ -77,7 +95,7 @@ def main():
             run_id = cur.fetchone()[0]
 
         try:
-            items = fetch_business(limit=limit)
+            items = fetch_business(max_rows=max_rows, page_size=page_size)
             fetched = len(items)
             inserted = 0
             updated = 0
