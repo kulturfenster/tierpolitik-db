@@ -4557,7 +4557,7 @@ export default function ClientBoard() {
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
           <div style={{ fontWeight: 700 }}>Cockpit 🚀</div>
         </div>
-        <div style={{ marginBottom: 10, padding: '6px 8px', borderRadius: 8, border: '1px solid #2f3f56', background: '#101826', color: '#b7d4ff', fontSize: 12, fontWeight: 700 }}>
+        <div style={{ marginBottom: 10, fontSize: 12, opacity: 0.68 }}>
           IP: {cockpitIp}
         </div>
         {sectionOrder.map((s) => (
