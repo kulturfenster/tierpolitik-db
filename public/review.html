@@ -220,10 +220,9 @@ function hideDecidedRows(){
   const rows = [...document.querySelectorAll('tr[data-id]')]
   const decidedById = {}
 
-
-  const localAffairDecided = new Set(Object.keys(decisions)
-    .filter((id) => String(id).startsWith('ch-parliament-'))
-    .map((id) => {
+  const localAffairDecided = new Set(Object.entries(decisions)
+    .filter(([id, d]) => String(id).startsWith('ch-parliament-') && d && d.storage === 'server')
+    .map(([id]) => {
       const external = String(id).split(':')[1] || ''
       return String(external).split('-')[0]
     })
@@ -234,7 +233,7 @@ function hideDecidedRows(){
     if (!id) return
     const status = row.getAttribute('data-status') || ''
     const serverDecided = status !== 'queued' && status !== 'new'
-    const localDecided = Boolean(decisions[id])
+    const localDecided = Boolean(decisions[id] && decisions[id].storage === 'server')
     const isParliamentEntry = String(id).startsWith('ch-parliament-')
     const affairId = isParliamentEntry ? (String(id).split(':')[1] || '').split('-')[0] : ''
     const localAffairHit = Boolean(affairId) && localAffairDecided.has(affairId)
@@ -293,6 +292,54 @@ async function toggleFastlaneTag(btn,id){
   if (btn) btn.disabled = false;
 }
 
+const API_BASE='/.netlify/functions';
+
+async function postJson(path,payload){
+  const res = await fetch(API_BASE + path, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  let data = null
+  try { data = await res.json() } catch {}
+  if (!res.ok || data?.ok === false) throw new Error(data?.error || ('HTTP ' + res.status))
+  return data || { ok: true }
+}
+
+async function getJson(path){
+  const res = await fetch(API_BASE + path, { headers: { accept: 'application/json' } })
+  let data = null
+  try { data = await res.json() } catch {}
+  if (!res.ok || data?.ok === false) throw new Error(data?.error || ('HTTP ' + res.status))
+  return data || { ok: true }
+}
+
+async function verifyDecisionInDb(id, expectedStatus){
+  const data = await getJson('/review-status?id=' + encodeURIComponent(id))
+  const saved = String(data?.status || '').toLowerCase()
+  return saved === String(expectedStatus || '').toLowerCase()
+}
+
+async function persistDecisionWithRetry(id, status, decidedAt, retries = 2){
+  let attempt = 0
+  let lastErr = null
+  while (attempt <= retries) {
+    try {
+      await postJson('/review-decision', { id, status, decidedAt })
+      const ok = await verifyDecisionInDb(id, status)
+      if (!ok) throw new Error('verify-mismatch')
+      return true
+    } catch (err) {
+      lastErr = err
+      if (attempt >= retries) break
+      const delayMs = 300 * Math.pow(2, attempt)
+      await new Promise((resolve)=>setTimeout(resolve, delayMs))
+      attempt += 1
+    }
+  }
+  throw lastErr || new Error('persist-failed')
+}
+
 async function setDecision(btn,id,status){
   const decidedAt = new Date().toISOString();
   const statusEl = document.getElementById('decision-status');
@@ -300,110 +347,51 @@ async function setDecision(btn,id,status){
 
   if (btn) btn.disabled = true;
 
-  // Optimistic UI: sofort weiterarbeiten, Server-Sync im Hintergrund
   const row = document.querySelector('tr[data-id="' + id + '"]');
-  if (row) {
-    row.setAttribute('data-status', status)
-    row.style.opacity = '0.72'
-    row.style.display='none'
-  }
-  const card = document.querySelector('.fastlane-card[data-id="' + id + '"]');
-  if (card) card.style.display = 'none'
-  setActiveRow(0)
-  focusActiveRow()
-  updateStatusSummary();
+  if (row) row.style.opacity = '0.72'
 
   const s=read();
   s[id]={status,decidedAt,storage:'pending-sync'};
   write(s);
 
-  // Fire-and-forget sync
-  postJson('/review-decision', { id, status, decidedAt })
-    .then(()=>{
-      const x=read();
-      x[id]={status,decidedAt,storage:'server'};
-      write(x);
-      if (statusEl) statusEl.textContent = 'In DB gespeichert. (Shortcuts: j/k bzw. j/l, a=approve, r=reject, f=fastlane)';
-    })
-    .catch(()=>{
-      const x=read();
-      x[id]={status,decidedAt,storage:'local-only'};
-      write(x);
-      if (statusEl) statusEl.textContent = 'Lokal gespeichert (Sync fehlgeschlagen).';
-    })
-    .finally(()=>{ if (btn) btn.disabled = false; });
-}
-
-function importDecisionsPrompt(){
-  const input = document.getElementById('import-decisions-input')
-  if (input) input.click()
-}
-
-async function importDecisionsFile(event){
-  const file = event?.target?.files?.[0]
-  if (!file) return
-  const statusEl = document.getElementById('decision-status')
   try {
-    const text = await file.text()
-    const imported = JSON.parse(text)
-    const current = read()
-    const merged = { ...current, ...imported }
-    write(merged)
-    hideDecidedRows()
-    if (statusEl) statusEl.textContent = 'Entscheidungen importiert. Jetzt synchronisieren klicken.'
-  } catch {
-    if (statusEl) statusEl.textContent = 'Import fehlgeschlagen (ungültige JSON-Datei).'
+    await persistDecisionWithRetry(id, status, decidedAt, 2)
+    const x=read();
+    x[id]={status,decidedAt,storage:'server'};
+    write(x);
+
+    if (row) {
+      row.setAttribute('data-status', status)
+      row.style.opacity = ''
+      if (!showDecided) row.style.display='none'
+    }
+    const card = document.querySelector('.fastlane-card[data-id="' + id + '"]');
+    if (card) card.style.display = 'none'
+    updateStatusSummary();
+    if (statusEl) statusEl.textContent = 'DB confirmed ✅';
+  } catch (err) {
+    const x=read();
+    x[id]={status,decidedAt,storage:'local-only',lastError:String(err && err.message ? err.message : err)};
+    write(x);
+    if (row) row.style.opacity = ''
+    if (statusEl) statusEl.textContent = 'DB write fehlgeschlagen für ' + id + ' (nicht als entschieden markiert).';
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  event.target.value = ''
 }
 
 async function syncLocalDecisions(){
-  const statusEl = document.getElementById('decision-status');
-  if (statusEl) statusEl.textContent = 'Synchronisiere lokale Entscheidungen…';
-
   const decisions = read();
-  let synced = 0;
-  let failed = 0;
-
   for (const [id, d] of Object.entries(decisions)) {
     if (!id || !d || d.storage === 'server') continue
     try {
-      await postJson('/review-decision', {
-        id,
-        status: d.status,
-        decidedAt: d.decidedAt || new Date().toISOString(),
-      })
+      await persistDecisionWithRetry(id, d.status, d.decidedAt || new Date().toISOString(), 1)
       decisions[id] = { ...d, storage: 'server' }
-      synced += 1
     } catch {
-      failed += 1
+      // keep local-only if sync fails
     }
   }
-
-  const tags = readFastlaneTags();
-  for (const [id, t] of Object.entries(tags)) {
-    if (!id || !t || t.storage === 'server') continue
-    try {
-      await postJson('/review-fastlane-tag', {
-        id,
-        fastlane: Boolean(t.fastlane),
-        taggedAt: t.taggedAt || new Date().toISOString(),
-      })
-      tags[id] = { ...t, storage: 'server' }
-    } catch {
-      // ignore tag sync failures for now
-    }
-  }
-
-  write(decisions);
-  writeFastlaneTags(tags);
-  hideDecidedRows();
-
-  if (statusEl) {
-    statusEl.textContent = failed === 0
-      ? 'Synchronisiert: ' + synced + ' Entscheidungen in DB.'
-      : 'Teilweise synchronisiert: ' + synced + ' ok, ' + failed + ' fehlgeschlagen.'
-  }
+  write(decisions)
 }
 
 function exportDecisions(){
@@ -418,7 +406,13 @@ function exportDecisions(){
 for (const id of Object.keys(readFastlaneTags())) renderFastlaneTagButton(id)
 document.addEventListener('keydown', keyboardHandler)
 window.addEventListener('load', ()=>{ setTimeout(()=>{ setActiveRow(0); focusActiveRow(); }, 0) })
-loadReviewItemsFromDb().finally(()=>{ hideDecidedRows(); setActiveRow(0); focusActiveRow(); });
+;(async ()=>{
+  await syncLocalDecisions()
+  await loadReviewItemsFromDb()
+  hideDecidedRows()
+  setActiveRow(0)
+  focusActiveRow()
+})();
 </script>
 </body>
 </html>
