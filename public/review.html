@@ -318,25 +318,56 @@ async function toggleFastlaneTag(btn,id){
 }
 
 const API_BASE='/.netlify/functions';
+const FETCH_TIMEOUT_MS = 12000;
 
-async function postJson(path,payload){
-  const res = await fetch(API_BASE + path, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  let data = null
-  try { data = await res.json() } catch {}
-  if (!res.ok || data?.ok === false) throw new Error(data?.error || ('HTTP ' + res.status))
-  return data || { ok: true }
+async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS){
+  const ctrl = new AbortController()
+  const t = setTimeout(()=>ctrl.abort(new Error('timeout')), timeoutMs)
+  try {
+    return await fetch(url, { ...options, signal: ctrl.signal })
+  } finally {
+    clearTimeout(t)
+  }
 }
 
-async function getJson(path){
-  const res = await fetch(API_BASE + path, { headers: { accept: 'application/json' } })
-  let data = null
-  try { data = await res.json() } catch {}
-  if (!res.ok || data?.ok === false) throw new Error(data?.error || ('HTTP ' + res.status))
-  return data || { ok: true }
+async function postJson(path,payload, retries = 1){
+  let lastErr = null
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const res = await fetchWithTimeout(API_BASE + path, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      let data = null
+      try { data = await res.json() } catch {}
+      if (!res.ok || data?.ok === false) throw new Error(data?.error || ('HTTP ' + res.status))
+      return data || { ok: true }
+    } catch (err) {
+      lastErr = err
+      if (attempt >= retries) break
+      await new Promise((resolve)=>setTimeout(resolve, 250 * (attempt + 1)))
+    }
+  }
+  throw lastErr || new Error('postJson failed')
+}
+
+async function getJson(path, retries = 1){
+  let lastErr = null
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const res = await fetchWithTimeout(API_BASE + path, { headers: { accept: 'application/json' } })
+      let data = null
+      try { data = await res.json() } catch {}
+      if (!res.ok || data?.ok === false) throw new Error(data?.error || ('HTTP ' + res.status))
+      return data || { ok: true }
+    } catch (err) {
+      lastErr = err
+      if (attempt >= retries) break
+      await new Promise((resolve)=>setTimeout(resolve, 250 * (attempt + 1)))
+    }
+  }
+  throw lastErr || new Error('getJson failed')
 }
 
 async function verifyDecisionInDb(id, expectedStatus){
