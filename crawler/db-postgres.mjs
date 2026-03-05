@@ -38,9 +38,19 @@ export function getDatabaseUrl() {
 }
 
 export async function withPgClient(fn) {
+  const connectionTimeoutMillis = Math.max(3000, Number(process.env.PG_CONNECT_TIMEOUT_MS || 15000))
+  const queryTimeout = Math.max(5000, Number(process.env.PG_QUERY_TIMEOUT_MS || 60000))
+  const statementTimeout = Math.max(queryTimeout, Number(process.env.PG_STATEMENT_TIMEOUT_MS || 120000))
+  const lockTimeout = Math.max(1000, Number(process.env.PG_LOCK_TIMEOUT_MS || 8000))
+
   const client = new Client({
     connectionString: getDatabaseUrl(),
     ssl: process.env.PGSSLMODE === 'require' ? { rejectUnauthorized: false } : undefined,
+    connectionTimeoutMillis,
+    query_timeout: queryTimeout,
+    statement_timeout: statementTimeout,
+    lock_timeout: lockTimeout,
+    application_name: process.env.PG_APPLICATION_NAME || 'tierpolitik-db',
   })
 
   await client.connect()
