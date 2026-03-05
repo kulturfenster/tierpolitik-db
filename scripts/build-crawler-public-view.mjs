@@ -68,7 +68,7 @@ async function runChecks(){
     const r=await one(c)
     const cls=r.ok?'ok':(String(r.status).startsWith('4')?'warn':'err')
     const tr=document.createElement('tr')
-    tr.innerHTML=\`<td>${esc(c.path)}</td><td>${esc(c.method)}</td><td class="${cls}">${esc(r.status)}</td><td>${esc(r.detail)}</td>\`
+    tr.innerHTML=\`<td>\${esc(c.path)}</td><td>\${esc(c.method)}</td><td class="\${cls}">\${esc(r.status)}</td><td>\${esc(r.detail)}</td>\`
     tb.appendChild(tr)
   }
 }
