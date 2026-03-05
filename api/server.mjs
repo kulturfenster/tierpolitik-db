@@ -5,6 +5,7 @@ import { handler as homeDataHandler } from '../netlify/functions/home-data.mjs'
 import { handler as feedbackSubmitHandler } from '../netlify/functions/feedback-submit.mjs'
 import { handler as reviewDecisionHandler } from '../netlify/functions/review-decision.mjs'
 import { handler as reviewFastlaneTagHandler } from '../netlify/functions/review-fastlane-tag.mjs'
+import { handler as reviewStatusHandler } from '../netlify/functions/review-status.mjs'
 
 const PORT = Number(process.env.PORT || 8787)
 const HOST = process.env.HOST || '127.0.0.1'
@@ -14,6 +15,7 @@ const routes = {
   '/api/feedback-submit': feedbackSubmitHandler,
   '/api/review-decision': reviewDecisionHandler,
   '/api/review-fastlane-tag': reviewFastlaneTagHandler,
+  '/api/review-status': reviewStatusHandler,
 }
 
 const readBody = (req) => new Promise((resolve, reject) => {
